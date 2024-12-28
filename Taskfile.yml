@@ -21,6 +21,11 @@ tasks:
       - task: build
       - uv run pytest -x tests {{.CLI_ARGS}}
 
+  version:
+    desc: Bump release version.
+    cmds:
+      - uvx bump-my-version bump -- {{.CLI_ARGS}}
+
   publish:
     desc: Publish package on PyPI.
     cmds:

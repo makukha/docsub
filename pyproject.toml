@@ -28,8 +28,21 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# bump-my-version
+
+[tool.bumpversion]
+current_version = "0.1.0"
+allow_dirty = true
+files = [
+  {filename = "src/docsub/__version__.py"},
+]
+
+# hatch
+
 [tool.hatch.version]
 path = "src/docsub/__version__.py"
+
+# uv
 
 [tool.uv]
 package = true
