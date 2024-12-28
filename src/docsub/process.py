@@ -24,7 +24,7 @@ def process_paths(
 
 RX_MD_FENCE = re.compile(
     r'(?P<space>\s*)(?P<fence>```+)\s*(?P<syntax>((?!<-)\S)+)?'
-    '(?:\s*<-\s*(?P<command>.*)|.*)',
+    r'(?:\s*<-\s*(?P<command>.*)|.*)',
     flags=re.DOTALL,
 )
 
