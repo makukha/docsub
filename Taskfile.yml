@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+
+  init:
+    desc: Init local dev environment.
+    cmds:
+      - uv sync
+
+  build:
+    desc: Build package.
+    cmds:
+      - uv run docsub -i README.md  # eating my own dog food
+      - uv lock
+      - rm -rf dist
+      - uv build
+
+  test:
+    desc: Run tests.
+    cmds:
+      - task: build
+      - uv run pytest -x tests {{.CLI_ARGS}}
+
+  publish:
+    desc: Publish package on PyPI.
+    cmds:
+      - task: build
+      - uv publish
