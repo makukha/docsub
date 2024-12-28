@@ -25,6 +25,7 @@ tasks:
     desc: Bump release version.
     cmds:
       - uvx bump-my-version bump -- {{.CLI_ARGS}}
+      - uv lock
 
   publish:
     desc: Publish package on PyPI.
