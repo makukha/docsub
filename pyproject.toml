@@ -12,6 +12,11 @@ dependencies = [
 [project.scripts]
 docsub = "docsub.cli:cli"
 
+[project.urls]
+Repository = "https://github.com/makukha/docsub"
+Issues = "https://github.com/makukha/docsub/issues"
+Changelog = "https://github.com/makukha/docsub/releases"
+
 [dependency-groups]
 dev = [
   "pytest~=8.3",
