@@ -8,3 +8,8 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [0.1.0](https://github.com/makukha/docsub/tree/0.1.0) — 2024-12-28
+
+### Added
+
+- Initial release ([#2](https://github.com/makukha/docsub/issues/2))

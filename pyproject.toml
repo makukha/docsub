@@ -47,7 +47,6 @@ path = "src/docsub/__version__.py"
 [tool.towncrier]
 directory = "news.d"
 filename = "CHANGELOG.md"
-underlines = ["", "", ""]
 title_format = "## [{version}](https://github.com/makukha/docsub/tree/{version}) — {project_date}"
 issue_format = "[#{issue}](https://github.com/makukha/docsub/issues/{issue})"
 type = [
@@ -57,8 +56,8 @@ type = [
   {name = "Added", directory = "added", showcontent = true},
   {name = "Changed", directory = "changed", showcontent = true},
   {name = "Fixed", directory = "fixed", showcontent = true},
-  {name = "Documentation", directory = "docs", showcontent = true},
-  {name = "Fixed", directory = "misc", showcontent = true},
+  {name = "Docs", directory = "docs", showcontent = true},
+  {name = "Misc", directory = "misc", showcontent = true},
 ]
 
 # uv
