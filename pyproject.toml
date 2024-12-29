@@ -42,6 +42,25 @@ files = [
 [tool.hatch.version]
 path = "src/docsub/__version__.py"
 
+# towncrier
+
+[tool.towncrier]
+directory = "news.d"
+filename = "CHANGELOG.md"
+underlines = ["", "", ""]
+title_format = "## [{version}](https://github.com/makukha/docsub/tree/{version}) — {project_date}"
+issue_format = "[#{issue}](https://github.com/makukha/docsub/issues/{issue})"
+type = [
+  {name = "Security", directory = "security", showcontent = true},
+  {name = "Removed", directory = "removed", showcontent = true},
+  {name = "Deprecated", directory = "deprecated", showcontent = true},
+  {name = "Added", directory = "added", showcontent = true},
+  {name = "Changed", directory = "changed", showcontent = true},
+  {name = "Fixed", directory = "fixed", showcontent = true},
+  {name = "Documentation", directory = "docs", showcontent = true},
+  {name = "Fixed", directory = "misc", showcontent = true},
+]
+
 # uv
 
 [tool.uv]
