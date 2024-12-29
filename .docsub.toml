@@ -1,2 +1,2 @@
-[command.help.env]
-COLUMNS = "60"
+[command.help]
+env = {COLUMNS = "60"}

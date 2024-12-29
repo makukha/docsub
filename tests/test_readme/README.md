@@ -1,8 +1,8 @@
 # Title
 
-```<- cat hello.txt
+```@docsub: cat hello.txt
 ```
 
-```python <- cat hello.py
+```python @docsub: cat hello.py
 existing text is replaced
 ```

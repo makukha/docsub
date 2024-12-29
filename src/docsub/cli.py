@@ -3,7 +3,8 @@ from pathlib import Path
 import rich_click as click
 
 from . import __version__
-from .process import process_paths
+from .config import load_config
+from .formats import process_paths
 
 
 @click.command()
@@ -20,4 +21,5 @@ def cli(file: list[str], in_place: bool):
     """
     Update documentation files with external content.
     """
-    process_paths((Path(p) for p in file), in_place=in_place)
+    conf = load_config()
+    process_paths((Path(p) for p in file), in_place=in_place, conf=conf)
