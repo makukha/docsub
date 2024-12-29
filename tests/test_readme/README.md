@@ -1,8 +1,10 @@
 # Title
 
-```@docsub: cat hello.txt
+<!-- docsub: cat hello.txt -->
+```
 ```
 
-```python @docsub: cat hello.py
-existing text is replaced
+<!-- docsub: cat hello.py -->
+```python
+# existing text will be replaced
 ```

@@ -1,18 +1,19 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Self
 
 
 @dataclass
 class Location:
     filename: str | Path
     lineno: int | None = None
+    colno: int | None = None
 
     def leader(self) -> str:
-        if self.lineno:
-            return f'"{self.filename}", line {self.lineno}: '
-        else:
-            return f'"{self.filename}": '
+        return ', '.join((
+            f'"{self.filename}"',
+            *((f'line {self.lineno}',) if self.lineno is not None else ()),
+            *((f'col {self.colno}',) if self.colno is not None else ()),
+        )) + ': '
 
 
 @dataclass
