@@ -1,5 +1,5 @@
 # docsub
-> Update documentation files with external content.
+> Update documentation files from external content.
 
 # Features
 
@@ -16,28 +16,30 @@ uv tool install docsub
 
 # Basic usage
 
-## Give README.md
+This file itself uses docsub to substitute examples from test folder!
 
-````markdown <- cat tests/test_readme/README.md
+## Given README.md
+
+````markdown @docsub: cat tests/test_readme/README.md
 # Title
 
-```<- cat hello.txt
+```@docsub: cat hello.txt
 ```
 
-```python <- cat hello.py
+```python @docsub: cat hello.py
 existing text is replaced
 ```
 ````
 
 ### hello.txt
 
-```text <- cat tests/test_readme/hello.txt
+```text @docsub: cat tests/test_readme/hello.txt
 Hello world!
 ```
 
 ### hello.py
 
-```python <- cat tests/test_readme/hello.py
+```python @docsub: cat tests/test_readme/hello.py
 def hello():
     print('Hi!')
 ```
@@ -48,14 +50,14 @@ def hello():
 $ uvx docsub -i README.md
 ```
 
-````markdown <- cat tests/test_readme/RESULT.md
+````markdown @docsub: cat tests/test_readme/RESULT.md
 # Title
 
-```<- cat hello.txt
+```@docsub: cat hello.txt
 Hello world!
 ```
 
-```python <- cat hello.py
+```python @docsub: cat hello.py
 def hello():
     print('Hi!')
 ```
@@ -63,9 +65,7 @@ def hello():
 
 # CLI Reference
 
-Yes, I eat my own dog food.
-
-```text <- help python -m docsub
+```text @docsub: help python -m docsub
                                                             
  Usage: python -m docsub [OPTIONS] [FILE]...                
                                                             
