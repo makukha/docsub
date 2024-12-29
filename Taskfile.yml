@@ -28,7 +28,6 @@ tasks:
   test:
     desc: Run tests.
     cmds:
-      - task: build
       - uv run pytest -x tests {{.CLI_ARGS}}
 
   release:version:
