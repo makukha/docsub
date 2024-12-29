@@ -1,10 +1,12 @@
 # Title
 
-```@docsub: cat hello.txt
+<!-- docsub: cat hello.txt -->
+```
 Hello world!
 ```
 
-```python @docsub: cat hello.py
+<!-- docsub: cat hello.py -->
+```python
 def hello():
     print('Hi!')
 ```

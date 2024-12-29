@@ -6,5 +6,5 @@
 
 <!-- docsub: cat hello.py -->
 ```python
-existing text is replaced
+# existing text will be replaced
 ```
