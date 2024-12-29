@@ -12,9 +12,10 @@ tasks:
   news:*:
     desc: Create news item {added|changed|deprecated|docs|fixed|misc|removed|security}.
     vars:
+      ISSUE: {sh: git rev-parse --abbrev-ref HEAD | cut -d- -f1}
       SECTION: '{{index .MATCH 0}}'
     cmds:
-      - uvx towncrier create "{{.CLI_ARGS}}.{{.SECTION}}.md"
+      - uvx towncrier create -c "{{.CLI_ARGS}}" "{{.ISSUE}}.{{.SECTION}}.md"
 
   build:
     desc: Build package.
