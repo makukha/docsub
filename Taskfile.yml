@@ -6,7 +6,7 @@ tasks:
     desc: Init local dev environment.
     cmds:
       - cmd: uv tool install "{{.ITEM}}"
-        for: [bump-my-version, towncrier]
+        for: [bump-my-version, docsub, towncrier]
       - uv sync
 
   news:*:
@@ -21,7 +21,7 @@ tasks:
     desc: Build package.
     cmds:
       - uv lock
-      - uv run docsub -i README.md  # eating my own dog food
+      - uvx docsub -i README.md  # eating my own dog food
       - rm -rf dist
       - uv build
 
