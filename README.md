@@ -20,26 +20,31 @@ This file itself uses docsub to substitute examples from test folder!
 
 ## Given README.md
 
-````markdown @docsub: cat tests/test_readme/README.md
+<!-- docsub: cat tests/test_readme/README.md -->
+````markdown
 # Title
 
-```@docsub: cat hello.txt
+<!-- docsub: cat hello.txt -->
+```
 ```
 
-```python @docsub: cat hello.py
-existing text is replaced
+<!-- docsub: cat hello.py -->
+```python
+existing text will be replaced
 ```
 ````
 
 ### hello.txt
 
-```text @docsub: cat tests/test_readme/hello.txt
+<!-- docsub: cat tests/test_readme/hello.txt -->
+```text
 Hello world!
 ```
 
 ### hello.py
 
-```python @docsub: cat tests/test_readme/hello.py
+<!-- docsub: cat tests/test_readme/hello.py -->
+```python
 def hello():
     print('Hi!')
 ```
@@ -50,14 +55,17 @@ def hello():
 $ uvx docsub -i README.md
 ```
 
-````markdown @docsub: cat tests/test_readme/RESULT.md
+<!-- docsub: cat tests/test_readme/RESULT.md -->
+````markdown
 # Title
 
-```@docsub: cat hello.txt
+<!-- docsub: cat hello.txt -->
+```
 Hello world!
 ```
 
-```python @docsub: cat hello.py
+<!-- docsub: cat hello.py -->
+```python
 def hello():
     print('Hi!')
 ```
@@ -65,7 +73,8 @@ def hello():
 
 # CLI Reference
 
-```text @docsub: help python -m docsub
+<!-- docsub: help python -m docsub -->
+```text
                                                             
  Usage: python -m docsub [OPTIONS] [FILE]...                
                                                             
