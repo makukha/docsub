@@ -47,7 +47,7 @@ path = "src/docsub/__version__.py"
 [tool.towncrier]
 directory = "news.d"
 filename = "CHANGELOG.md"
-title_format = "## [{version}](https://github.com/makukha/docsub/tree/{version}) — {project_date}"
+title_format = "## [v{version}](https://github.com/makukha/docsub/releases/tag/v{version}) — {project_date}"
 issue_format = "[#{issue}](https://github.com/makukha/docsub/issues/{issue})"
 type = [
   {name = "Security ⚡️", directory = "security", showcontent = true},

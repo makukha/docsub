@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
-## [0.2.0](https://github.com/makukha/docsub/tree/0.2.0) — 2024-12-29
+## [v0.2.0](https://github.com/makukha/docsub/releases/tag/v0.2.0) — 2024-12-29
 
 ### Breaking 🔥
 
@@ -39,8 +39,8 @@ All notable changes to this project will be documented in this file. Changes for
 - Add informative icons to changelog sections ([#22](https://github.com/makukha/docsub/issues/22))
 
 
-## [0.1.0](https://github.com/makukha/docsub/tree/0.1.0) — 2024-12-28
+## [v0.1.0](https://github.com/makukha/docsub/releases/tag/v0.1.0) — 2024-12-28
 
-### Added
+### Added 🌱
 
 - Initial release ([#2](https://github.com/makukha/docsub/issues/2))
