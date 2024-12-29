@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.3.0](https://github.com/makukha/docsub/releases/tag/v0.3.0) — 2024-12-30
+
+### Added 🌱
+
+- Option `docsub after line N:` to keep N first lines of replaced block content ([#13](https://github.com/makukha/docsub/issues/13))
+
+### Misc
+
+- Fixed changelog URLs and release name ([#25](https://github.com/makukha/docsub/issues/25))
+
+
 ## [v0.2.0](https://github.com/makukha/docsub/releases/tag/v0.2.0) — 2024-12-29
 
 ### Breaking 🔥
