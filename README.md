@@ -30,7 +30,7 @@ This file itself uses docsub to substitute examples from test folder!
 
 <!-- docsub: cat hello.py -->
 ```python
-existing text will be replaced
+# existing text will be replaced
 ```
 ````
 
