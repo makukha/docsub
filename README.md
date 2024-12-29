@@ -73,8 +73,9 @@ def hello():
 
 # CLI Reference
 
-<!-- docsub: help python -m docsub -->
-```text
+<!-- docsub after line 1: help python -m docsub -->
+```shell
+$ docsub --help
                                                             
  Usage: python -m docsub [OPTIONS] [FILE]...                
                                                             
