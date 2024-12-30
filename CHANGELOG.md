@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.4.0](https://github.com/makukha/docsub/releases/tag/v0.4.0) — 2024-12-30
+
+### Added 🌿
+
+- `docsub: sh` command to substitute results of shell script execution ([#7](https://github.com/makukha/docsub/issues/7))
+
+### Misc
+
+- Updated changelog icons ([#7](https://github.com/makukha/docsub/issues/7))
+
+
 ## [v0.3.0](https://github.com/makukha/docsub/releases/tag/v0.3.0) — 2024-12-30
 
 ### Added 🌿
