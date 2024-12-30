@@ -50,11 +50,11 @@ filename = "CHANGELOG.md"
 title_format = "## [v{version}](https://github.com/makukha/docsub/releases/tag/v{version}) — {project_date}"
 issue_format = "[#{issue}](https://github.com/makukha/docsub/issues/{issue})"
 type = [
-  {name = "Security ⚡️", directory = "security", showcontent = true},
+  {name = "Security ⚠️", directory = "security", showcontent = true},
   {name = "Breaking 🔥", directory = "breaking", showcontent = true},
-  {name = "Removed ❌", directory = "removed", showcontent = true},
-  {name = "Deprecated 🐌", directory = "deprecated", showcontent = true},
-  {name = "Added 🌱", directory = "added", showcontent = true},
+  {name = "Removed 💨", directory = "removed", showcontent = true},
+  {name = "Deprecated ❄️", directory = "deprecated", showcontent = true},
+  {name = "Added 🌿", directory = "added", showcontent = true},
   {name = "Changed", directory = "changed", showcontent = true},
   {name = "Fixed", directory = "fixed", showcontent = true},
   {name = "Docs", directory = "docs", showcontent = true},
