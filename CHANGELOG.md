@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file. Changes for
 
 ## [v0.3.0](https://github.com/makukha/docsub/releases/tag/v0.3.0) — 2024-12-30
 
-### Added 🌱
+### Added 🌿
 
 - Option `docsub after line N:` to keep N first lines of replaced block content ([#13](https://github.com/makukha/docsub/issues/13))
 
@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file. Changes for
 
 - In Markdown files, `docsub` header is now used in one-line comment before content block, other than part of fenced code syntax ([#19](https://github.com/makukha/docsub/issues/19))
 
-### Added 🌱
+### Added 🌿
 
 - Changelog, managed by [Towncrier](https://towncrier.readthedocs.io) ([#12](https://github.com/makukha/docsub/issues/12))
 
@@ -52,6 +52,6 @@ All notable changes to this project will be documented in this file. Changes for
 
 ## [v0.1.0](https://github.com/makukha/docsub/releases/tag/v0.1.0) — 2024-12-28
 
-### Added 🌱
+### Added 🌿
 
 - Initial release ([#2](https://github.com/makukha/docsub/issues/2))
