@@ -3,18 +3,22 @@ from dataclasses import dataclass, field
 from .base import BaseCommand, InvalidCommand
 from .cat import CatCommand
 from .help import HelpCommand
+from .sh import ShCommand
 
 
 @dataclass
 class CommandsConfig:
     cat: CatCommand.confclass = field(default_factory=CatCommand.confclass)
     help: HelpCommand.confclass = field(default_factory=HelpCommand.confclass)
+    sh: ShCommand.confclass = field(default_factory=ShCommand.confclass)
 
 
 COMMANDS: dict[str, BaseCommand] = {
     CatCommand.name: CatCommand,
     HelpCommand.name: HelpCommand,
+    ShCommand.name: ShCommand,
 }
+
 
 def parse_command(statement: str, conf: CommandsConfig) -> BaseCommand:
     # get name
