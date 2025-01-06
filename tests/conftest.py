@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 import sys
 
-from pytest import fixture
+from pytest import fixture  # type: ignore
 
 
 @fixture

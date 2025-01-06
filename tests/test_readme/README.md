@@ -1,12 +1,13 @@
 # Title
 <!-- docsub: begin -->
-<!-- docsub: include description.txt -->
-<!-- docsub: include features.txt -->
+<!-- docsub: include info.md -->
+<!-- docsub: include features.md -->
+...
 <!-- docsub: end -->
 
 ## Table
 <!-- docsub: begin -->
-<!-- docsub: include data.txt -->
+<!-- docsub: include data.md -->
 <!-- docsub: lines after 2 -->
 | Col 1 | Col 2 |
 |-------|-------|
@@ -16,7 +17,7 @@
 ## Code
 <!-- docsub: begin #code -->
 <!-- docsub: include func.py -->
-<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
 ...
 ```
