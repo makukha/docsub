@@ -12,8 +12,8 @@ from ..__base__ import (
     StopSubstitution,
     SyntaxElement,
 )
-from ..commands import command
-from ..config import DocsubConfig
+from ..commands import COMMANDS
+from ..config import DocsubSettings
 
 
 RX_FENCE = re.compile(r'^(?P<indent>\s*)(?P<fence>```+|~~~+).*$')
@@ -22,17 +22,17 @@ PREFIX = r'^\s*<!--\s*docsub:'
 RX_DOCSUB = re.compile(PREFIX)
 RX_BEGIN = re.compile(PREFIX + r'\s*begin(?:\s+#(?P<id>\S+))?\s*-->\s*$')
 RX_END = re.compile(PREFIX + r'\s*end(?:\s+#(?P<id>\S+))?\s*-->\s*$')
-RX_COMMAND = re.compile(PREFIX + fr'\s*(?P<name>{'|'.join(command)})(\s+(?P<args>\S.*))?\s*-->\s*')
+RX_COMMAND = re.compile(PREFIX + fr'\s*(?P<name>{'|'.join(COMMANDS)})(\s+(?P<args>\S.*))?\s*-->\s*')
 
 
 @dataclass
 class BlockSubstitution(Substitution):
-    conf: DocsubConfig
+    conf: DocsubSettings
     all_commands_consumed: bool = False
 
     @override
     @classmethod
-    def match(cls, line: Line, conf: DocsubConfig) -> Self | None:
+    def match(cls, line: Line, conf: DocsubSettings) -> Self | None:
         if not RX_DOCSUB.match(line.text):
             return None
         if not (match := RX_BEGIN.match(line.text)):
@@ -62,7 +62,7 @@ class BlockSubstitution(Substitution):
         if m := RX_COMMAND.match(line.text):
             name = m.group('name')
             conf = getattr(self.conf.command, name, None)
-            cmd = command[name].parse_args(m.group('args') or '', conf=conf, loc=line.loc)
+            cmd = COMMANDS[name].parse_args(m.group('args') or '', conf=conf, loc=line.loc)
             self.append_command(cmd)
             yield line
             return
@@ -103,7 +103,7 @@ class Fence(SyntaxElement):
 
 
 class MarkdownProcessor:
-    def __init__(self, conf: DocsubConfig):
+    def __init__(self, conf: DocsubSettings):
         self.conf = conf
 
     def process_document(self, file: Path) -> Iterable[str]:

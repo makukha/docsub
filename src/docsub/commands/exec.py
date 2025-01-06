@@ -1,17 +1,18 @@
 from collections.abc import Iterable
-from dataclasses import dataclass, field
 import os
 import re
+from pathlib import Path
 from subprocess import check_output
-from typing import Self, override
+from typing import Annotated, Self, override
+
+from pydantic import Field
 
 from ..__base__ import Config, Line, Location, Producer, Substitution
 
 
-@dataclass
 class ExecConfig(Config):
-    workdir: str = '.'
-    env: dict[str, str] = field(default_factory=dict)
+    workdir: Annotated[Path, Field(default_factory=Path)]
+    env: Annotated[dict[str, str], Field(default_factory=dict)]
 
 
 RX_CMD = re.compile(r'^\s*(?P<cmd>\S.*)$')

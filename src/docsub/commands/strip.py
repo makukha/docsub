@@ -7,7 +7,7 @@ class StripCommand(Modifier, name='strip'):
     def __init__(self, loc: Location):
         super().__init__(loc)
         self.lines: list[Line] = []
-        self.is_empty = True
+        self.saw_non_empty = False
 
     @override
     @classmethod
@@ -19,16 +19,14 @@ class StripCommand(Modifier, name='strip'):
     @override
     def on_produced_line(self, line: Line, ctx: Substitution) -> Iterable[Line]:
         line.text = line.text.strip() + '\n'
-        if self.is_empty:
-            if line.text:  # first non-blank line
-                self.is_empty = False
-                yield line
-            else:
-                pass  # blank line suppressed
-        else:
-            if line.text:  # some non-empty line
-                while self.lines:  # yield from lines buffer
-                    yield self.lines.pop()
-            else:
+
+        if line.text.isspace():
+            if self.saw_non_empty:
                 self.lines.append(line)  # empty line may be trailing, push to buffer
-                # empty lines from buffer will never be returned if iteration stops
+            else:
+                pass  # suppress initial blank line
+        else:
+            self.saw_non_empty = True
+            yield from self.lines  # yield blank lines from buffer
+            self.lines.clear()
+            yield line

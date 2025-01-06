@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from pathlib import Path
 
-from .config import DocsubConfig
+from .config import DocsubSettings
 from .processors.md import MarkdownProcessor
 
 
@@ -9,7 +9,7 @@ def process_paths(
     paths: Iterable[Path],
     *,
     in_place: bool = False,
-    conf: DocsubConfig,
+    conf: DocsubSettings,
 ) -> None:
     proc_md = MarkdownProcessor(conf)
     for path in paths:

@@ -1,15 +1,15 @@
 from collections.abc import Iterable
-from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import Self, override
+from typing import Annotated, Self, override
+
+from pydantic import Field
 
 from ..__base__ import Config, Line, Location, Producer, Substitution
 
 
-@dataclass
 class IncludeConfig(Config):
-    basedir: str = '.'
+    basedir: Annotated[Path, Field(default_factory=Path)]
 
 
 RX_PATH = re.compile(r'^\s*(?P<path>\S.*)$')
