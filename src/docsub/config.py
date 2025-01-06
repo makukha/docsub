@@ -1,42 +1,49 @@
-from dataclasses import dataclass, field, fields
-from pathlib import Path
-import tomllib
+from typing import Annotated
 
-from .commands import CommandsConfig, command
+from loguru import logger
+from pydantic import Field
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    TomlConfigSettingsSource,
+)
+
+from .commands import CommandsConfig
+from .logging import LoggingConfig, configure_logging
 
 
-@dataclass
-class DocsubConfig:
-    command: CommandsConfig = field(default_factory=CommandsConfig)
+class DocsubSettings(BaseSettings):
+    command: Annotated[CommandsConfig, Field(default_factory=CommandsConfig)]
+    logging: Annotated[LoggingConfig, Field(default_factory=LoggingConfig)]
+
+    model_config = SettingsConfigDict(
+        env_prefix='DOCSUB_',
+        env_nested_delimiter='_',
+        nested_model_default_partial_update=True,
+        toml_file='.docsub.toml',
+    )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        return (
+            env_settings,
+            TomlConfigSettingsSource(settings_cls),
+        )
 
 
-def load_config(path: Path = Path('.docsub.toml')) -> DocsubConfig:
+def load_config() -> DocsubSettings:
     """
     Load config from file.
     """
-    if not path.exists():
-        return DocsubConfig()
-    conf = load_toml_config(path)
+    conf = DocsubSettings()
+    configure_logging(conf.logging)
+    logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
     return conf
-
-
-def load_toml_config(path: Path) -> DocsubConfig:
-    """
-    Load  config from TOML file.
-    """
-    # get commands dict
-    confdict = tomllib.loads(path.read_text())
-    try:
-        confdict = confdict['tool']['docsub']
-    except KeyError as exc:
-        raise ValueError('Invalid .docsub.toml config file') from exc
-    cmd_dict: dict[str, dict] = confdict.get('command', {})
-
-    # parse commands config
-    cmd_values = {
-        f.name: command[f.name].conftype(**cmd_dict.get(f.name, {}))  # type: ignore
-        for f in fields(CommandsConfig)
-        if command[f.name].conftype is not None
-    }
-    cmd_conf = CommandsConfig(**cmd_values)  # type: ignore
-    return DocsubConfig(command=cmd_conf)

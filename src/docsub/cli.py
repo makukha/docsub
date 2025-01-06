@@ -21,5 +21,4 @@ def cli(file: list[str], in_place: bool):
     """
     Update documentation files with external content.
     """
-    conf = load_config()
-    process_paths((Path(p) for p in file), in_place=in_place, conf=conf)
+    process_paths((Path(p) for p in file), in_place=in_place, conf=load_config())

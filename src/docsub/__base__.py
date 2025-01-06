@@ -5,6 +5,8 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, ClassVar, Self
 
+from pydantic import BaseModel as Config
+
 
 # syntax
 
@@ -96,17 +98,10 @@ class Substitution(SyntaxElement, ABC):
             yield from mod_cmd.after_producers(self)
 
     def _modified_lines(self, line: Line) -> Iterable[Line]:
-        lines = chain((line,))
+        lines = (line,)
         for cmd in self.modifiers:
-            lines = chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines)
+            lines = tuple(chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines))
         yield from lines
-
-
-@dataclass
-class Config(ABC):
-    """
-    Base config.
-    """
 
 
 class Command(ABC):
