@@ -1,36 +1,24 @@
 from dataclasses import dataclass, field
 
-from .base import BaseCommand, InvalidCommand
-from .cat import CatCommand
-from .help import HelpCommand
-from .sh import ShCommand
+from ..__base__ import Command
+from .exec import ExecCommand, ExecConfig
+from .help import HelpCommand, HelpConfig
+from .include import IncludeCommand, IncludeConfig
+from .lines import LinesCommand
+from .strip import StripCommand
+
+
+command: dict[str, type[Command]] = dict(
+    exec=ExecCommand,
+    help=HelpCommand,
+    include=IncludeCommand,
+    lines=LinesCommand,
+    strip=StripCommand,
+)
 
 
 @dataclass
 class CommandsConfig:
-    cat: CatCommand.confclass = field(default_factory=CatCommand.confclass)
-    help: HelpCommand.confclass = field(default_factory=HelpCommand.confclass)
-    sh: ShCommand.confclass = field(default_factory=ShCommand.confclass)
-
-
-COMMANDS: dict[str, BaseCommand] = {
-    CatCommand.name: CatCommand,
-    HelpCommand.name: HelpCommand,
-    ShCommand.name: ShCommand,
-}
-
-
-def parse_command(statement: str, conf: CommandsConfig) -> BaseCommand:
-    # get name
-    try:
-        name, args = statement.split(maxsplit=1)
-    except Exception as exc:
-        raise InvalidCommand(f'Invalid docsub command "{statement}"') from exc
-
-    # validate name
-    if name not in COMMANDS:
-        raise InvalidCommand(f'Unknown docsub command name "{name}"')
-
-    # instantiate command
-    command = COMMANDS[name].from_args(args, conf=getattr(conf, name))
-    return command
+    exec: ExecConfig = field(default_factory=ExecConfig)
+    help: HelpConfig = field(default_factory=HelpConfig)
+    include: IncludeConfig = field(default_factory=IncludeConfig)

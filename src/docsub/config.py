@@ -2,26 +2,44 @@ from dataclasses import dataclass, field, fields
 from pathlib import Path
 import tomllib
 
-from .commands import CommandsConfig
+from .__base__ import Config
+from .commands import CommandsConfig, command
 
 
 @dataclass
-class Config:
+class DocsubConfig:
     command: CommandsConfig = field(default_factory=CommandsConfig)
 
 
-def load_config(path: Path = Path('.docsub.toml')) -> Config:
+def load_config(path: Path = Path('.docsub.toml')) -> DocsubConfig:
+    """
+    Load config from file.
+    """
     if not path.exists():
-        return Config()
-    conf = parse_config(tomllib.loads(path.read_text()))
+        return DocsubConfig()
+    conf = load_toml_config(path)
     return conf
 
 
-def parse_config(confdict: dict) -> Config:
-    commdict = confdict.get('command', {})
-    commands = {
-        cmd.name: cmd.type(**commdict.get(cmd.name, {}))
-        for cmd in fields(CommandsConfig)
+def load_toml_config(path: Path) -> DocsubConfig:
+    """
+    Load  config from TOML file.
+    """
+    # get commands dict
+    confdict = tomllib.loads(path.read_text())
+    if any(not isinstance(t, Config) for t in confdict.values()):
+        assert False, 'unreachable'
+    try:
+        confdict = confdict['tool']['docsub']
+    except KeyError as exc:
+        raise ValueError('Invalid .docsub.toml config file') from exc
+    cmd_dict: dict[str, dict] = confdict.get('command', {})
+
+    # parse commands config
+    cmd_values = {
+        f.name: command[f.name].conftype(**cmd_dict.get(f.name, {}))  # type: ignore
+        for f in fields(CommandsConfig)
+        if command[f.name].conftype is not None
     }
-    conf = Config(command=CommandsConfig(**commands))
-    return conf
+    cmd_conf = CommandsConfig(**cmd_values)  # type: ignore
+    return DocsubConfig(command=cmd_conf)

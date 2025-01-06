@@ -1,19 +1,19 @@
 from collections.abc import Iterable
 from pathlib import Path
 
-from ..config import Config
-
-from .md import process_md_document
+from .config import DocsubConfig
+from .processors.md import MarkdownProcessor
 
 
 def process_paths(
     paths: Iterable[Path],
     *,
     in_place: bool = False,
-    conf: Config,
+    conf: DocsubConfig,
 ) -> None:
+    proc_md = MarkdownProcessor(conf)
     for path in paths:
-        lines = process_md_document(path, conf=conf)
+        lines = proc_md.process_document(path)  # iterator
         if in_place:
             path.write_text(''.join(lines))
         else:

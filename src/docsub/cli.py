@@ -1,10 +1,10 @@
 from pathlib import Path
 
-import rich_click as click
+import rich_click as click  # type: ignore
 
 from . import __version__
 from .config import load_config
-from .formats import process_paths
+from .process import process_paths
 
 
 @click.command()
