@@ -34,7 +34,7 @@ tasks:
     desc: Build package.
     cmds:
       - uv lock
-      - uv run docsub -i README.md  # eating my own dog food
+      - uv run python -m docsub -i README.md  # eating my own dog food
       - rm -rf dist
       - uv build
 

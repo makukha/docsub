@@ -1,5 +1,5 @@
-# docsub 🩻
-> Mutable Markdown docs made easy.
+# docsub
+> Composable Markdown docs made easy.
 
 > [!WARNING]
 > This project is on its very early stage, syntax and functionality may change significantly. Even if not scared, use specific package version, e.g. `docsub==0.4.0`
@@ -54,6 +54,30 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/README.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
+# Title
+<!-- docsub: begin -->
+<!-- docsub: include info.md -->
+<!-- docsub: include features.md -->
+...
+<!-- docsub: end -->
+
+## Table
+<!-- docsub: begin -->
+<!-- docsub: include data.md -->
+<!-- docsub: lines after 2 -->
+| Col 1 | Col 2 |
+|-------|-------|
+...
+<!-- docsub: end -->
+
+## Code
+<!-- docsub: begin #code -->
+<!-- docsub: include func.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+...
+```
+<!-- docsub: end #code -->
 ````
 <!-- docsub: end #readme -->
 
@@ -62,6 +86,7 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/info.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
+> Long description.
 ````
 <!-- docsub: end #readme -->
 
@@ -70,6 +95,9 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/features.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
+* Feature 1
+* Feature 2
+* Feature 3
 ````
 <!-- docsub: end #readme -->
 
@@ -78,6 +106,9 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/data.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
+| Key 1 | value 1 |
+| Key 2 | value 2 |
+| Key 3 | value 3 |
 ````
 <!-- docsub: end #readme -->
 
@@ -86,6 +117,8 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/func.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ````python
+def func():
+    pass
 ````
 <!-- docsub: end #readme -->
 
@@ -99,6 +132,36 @@ $ uvx docsub -i README.md
 <!-- docsub: include tests/test_readme/__result__.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
+# Title
+<!-- docsub: begin -->
+<!-- docsub: include info.md -->
+<!-- docsub: include features.md -->
+> Long description.
+* Feature 1
+* Feature 2
+* Feature 3
+<!-- docsub: end -->
+
+## Table
+<!-- docsub: begin -->
+<!-- docsub: include data.md -->
+<!-- docsub: lines after 2 -->
+| Col 1 | Col 2 |
+|-------|-------|
+| Key 1 | value 1 |
+| Key 2 | value 2 |
+| Key 3 | value 3 |
+<!-- docsub: end -->
+
+## Code
+<!-- docsub: begin #code -->
+<!-- docsub: include func.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+def func():
+    pass
+```
+<!-- docsub: end #code -->
 ````
 <!-- docsub: end #readme -->
 
@@ -203,7 +266,7 @@ Strip trailing whitespaces on every line of substitution result; strip initial a
 
 Configuration resolution order
 
-* environment variables *(to be implemented)*
+* environment variables *(to be documented)*
 * `.docsub.toml` config file in current working directory
 * `pyproject.toml`, section `[tool.docsub]` *(to be implemented)*
 * default config values
@@ -214,8 +277,6 @@ All config keys are optional.
 
 
 ```toml
-[tool.docsub]
-
 [command.exec]
 env = {}  # default
 workdir = "."  # default
@@ -225,11 +286,25 @@ env = { COLUMNS = "60" }
 
 [command.include]
 basedir = "."  # default
+
+[logging]
+# level = "DEBUG"  # default: missing value
 ```
+
+> [!WARNING]
+> In future releases config keys will be moved under `[tool.docsub]` root, this will be a breaking change.
 
 ## Environment variables
 
-*(to be implemented)*
+*(to be documented)*
+
+
+# Logging
+
+Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disabled by default. To enable logging, set config option `log_level` to one of [logging levels](https://loguru.readthedocs.io/en/stable/api/logger.html#levels) supported by loguru.
+
+*(logging is rudimentary at the moment)*
+
 
 
 # CLI Reference
@@ -240,10 +315,10 @@ basedir = "."  # default
 <!-- docsub: strip -->
 ```shell
 $ docsub --help
- Usage: python -m docsub [OPTIONS] [FILE]...                
-                                                            
- Update documentation files with external content.          
-                                                            
+Usage: python -m docsub [OPTIONS] [FILE]...
+
+Update documentation files with external content.
+
 ╭─ Options ────────────────────────────────────────────────╮
 │ --in-place  -i    Overwrite source files.                │
 │ --version         Show the version and exit.             │
