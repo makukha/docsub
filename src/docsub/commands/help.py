@@ -2,6 +2,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 import os
 import re
+import shlex
 import sys
 from subprocess import check_output
 from typing import Self, override
@@ -42,7 +43,7 @@ class HelpCommand(Producer, name='help', conftype=HelpConfig):
         )
         try:
             result = check_output(
-                args=cmd,
+                args=shlex.split(cmd),
                 env=dict(os.environ) | self.conf.env,
                 text=True,
             )

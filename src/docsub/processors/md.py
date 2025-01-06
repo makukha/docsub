@@ -4,13 +4,21 @@ from pathlib import Path
 import re
 from typing import Self, override
 
-from ..__base__ import Substitution, InvalidSubstitution, Line, Location, StopSubstitution
+from ..__base__ import (
+    Substitution,
+    InvalidSubstitution,
+    Line,
+    Location,
+    StopSubstitution,
+    SyntaxElement,
+)
 from ..commands import command
 from ..config import DocsubConfig
 
 
-PREFIX = r'^\s*<!--\s*docsub:'
+RX_FENCE = re.compile(r'^(?P<indent>\s*)(?P<fence>```+|~~~+).*$')
 
+PREFIX = r'^\s*<!--\s*docsub:'
 RX_DOCSUB = re.compile(PREFIX)
 RX_BEGIN = re.compile(PREFIX + r'\s*begin(?:\s+#(?P<id>\S+))?\s*-->\s*$')
 RX_END = re.compile(PREFIX + r'\s*end(?:\s+#(?P<id>\S+))?\s*-->\s*$')
@@ -54,7 +62,7 @@ class BlockSubstitution(Substitution):
         if m := RX_COMMAND.match(line.text):
             name = m.group('name')
             conf = getattr(self.conf.command, name, None)
-            cmd = command[name].parse_args(m.group('args'), conf=conf, loc=line.loc)
+            cmd = command[name].parse_args(m.group('args') or '', conf=conf, loc=line.loc)
             self.append_command(cmd)
             yield line
             return
@@ -77,27 +85,63 @@ class BlockSubstitution(Substitution):
             )
 
 
+@dataclass
+class Fence(SyntaxElement):
+    indent: str
+    fence: str
+
+    @classmethod
+    def match(cls, line: Line) -> Self | None:
+        if match := RX_FENCE.match(line.text):
+            return cls(**match.groupdict(), loc=line.loc)
+        return None
+
+    def match_end(self, line: Line) -> bool:
+        if other := self.match(line):
+            return self.indent == other.indent and self.fence == other.fence
+        return False
+
+
 class MarkdownProcessor:
     def __init__(self, conf: DocsubConfig):
         self.conf = conf
 
     def process_document(self, file: Path) -> Iterable[str]:
         block: BlockSubstitution | None = None
+        fences: list[Fence] = []
 
         with file.open('rt') as f:
             lineno = 0
             while text := f.readline():
                 line = Line(text=text, loc=Location(fname=file, lineno=lineno))
-                if not block:
-                    # block begins?
-                    if (block := BlockSubstitution.match(line, conf=self.conf)):
-                        block.conf = self.conf
-                    yield line.text  # yield plain line or block header
-                else:
-                    # let block process line
+
+                # delegate line processing to block
+                if block:
                     try:
                         yield from (ln.text for ln in block.consume_line(line))
                     except StopSubstitution:
-                        del block
                         block = None
+
+                # inside fenced code block, all lines are plain
+                elif fences:
+                    yield line.text
+                    if fences[-1].match_end(line):  # end of fenced code block
+                        fences.pop()
+                    elif fence := Fence.match(line):  # nested fenced code block
+                        fences.append(fence)
+
+                # block begins?
+                elif block := BlockSubstitution.match(line, conf=self.conf):
+                    yield line.text
+                    block.conf = self.conf
+
+                # top level fenced code block?
+                elif fence := Fence.match(line):
+                    yield line.text
+                    fences.append(fence)
+
+                # just a plain line
+                else:
+                    yield line.text  # yield plain line or block header
+
                 lineno += 1

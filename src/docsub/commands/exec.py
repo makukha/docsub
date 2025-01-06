@@ -35,7 +35,7 @@ class ExecCommand(Producer, name='exec', conftype=ExecConfig):
     def produce(self, ctx: Substitution) -> Iterable[Line]:
         try:
             result = check_output(
-                args=f'sh -c {self.cmd}',
+                args=['sh', '-c', self.cmd],
                 env=dict(os.environ) | self.conf.env,
                 text=True,
                 cwd=self.conf.workdir,

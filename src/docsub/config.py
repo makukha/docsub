@@ -2,7 +2,6 @@ from dataclasses import dataclass, field, fields
 from pathlib import Path
 import tomllib
 
-from .__base__ import Config
 from .commands import CommandsConfig, command
 
 
@@ -27,8 +26,6 @@ def load_toml_config(path: Path) -> DocsubConfig:
     """
     # get commands dict
     confdict = tomllib.loads(path.read_text())
-    if any(not isinstance(t, Config) for t in confdict.values()):
-        assert False, 'unreachable'
     try:
         confdict = confdict['tool']['docsub']
     except KeyError as exc:
