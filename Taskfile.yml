@@ -6,7 +6,7 @@ tasks:
     desc: Init local dev environment.
     cmds:
       - cmd: uv tool install "{{.ITEM}}"
-        for: [bump-my-version, towncrier]
+        for: [bump-my-version, mypy, ruff, towncrier]
       - uv sync
 
   news:*:
@@ -17,6 +17,19 @@ tasks:
     cmds:
       - uvx towncrier create -c "{{.CLI_ARGS}}" "{{.ISSUE}}.{{.SECTION}}.md"
 
+  lint:
+    desc: Run linters.
+    cmds:
+      - uvx mypy src tests
+      - uvx ruff check
+      - uvx ruff format --check
+
+  test:
+    desc: Run tests.
+    interactive: true
+    cmds:
+      - uv run pytest -x tests {{.CLI_ARGS}}
+
   build:
     desc: Build package.
     cmds:
@@ -24,11 +37,6 @@ tasks:
       - uv run docsub -i README.md  # eating my own dog food
       - rm -rf dist
       - uv build
-
-  test:
-    desc: Run tests.
-    cmds:
-      - uv run pytest -x tests {{.CLI_ARGS}}
 
   release:version:
     desc: Bump release version.

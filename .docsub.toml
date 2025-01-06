@@ -1,2 +1,3 @@
+[tool.docsub]
 [command.help]
 env = {COLUMNS = "60"}
