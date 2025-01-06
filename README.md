@@ -27,7 +27,8 @@
 # Non-use cases
 
 * Not a replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
-* Not a full-featured documentation engine like [Sphinx](https://www.sphinx-doc.org) 
+* Not a full-featured documentation engine like [Sphinx](https://www.sphinx-doc.org)
+* Not a full-featured templating language like [Jinja](https://jinja.palletsprojects.com).
 
 
 # Installation
@@ -56,9 +57,9 @@ $ uvx docsub -i README.md
 ````
 <!-- docsub: end #readme -->
 
-### description.md
+### info.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/description.md -->
+<!-- docsub: include tests/test_readme/info.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 ````
@@ -119,6 +120,8 @@ This text will be replaced too.
 ```
 
 Each block starts with `begin` and ends with `end`. One or many commands come at the top of the block, otherwise they are treated as plain text. Blocks without *producing commands* are not allowed. Block's inner text will be replaced upon substitution, unless modifier command `lines` is used.
+
+If docsub substitution block leis inside markdown fenced Code block, it is not substituted (examples: fenced code blocks right above and below). To put dynamic content int fenced code block, place `begin` and `end` around it and use `lines after 1 upto -1` (example: Basic usage section).
 
 For nested blocks, only top level substitution is performed. Use block `#identifier` to distinguish nesting levels.
 
