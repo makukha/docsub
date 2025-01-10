@@ -25,9 +25,10 @@
 > [!NOTE]
 > This file uses [docsub]() itself. Dig into raw markup if interested.
 
-## Missing features
+## Planned features
 
-* Backups
+* More commands
+* Backup target files
 * Dependency discovery
 * Extensibility by end user
 * Detailed logging
@@ -58,11 +59,50 @@ uv tool install docsub==0.5.0
 $ uvx docsub -i README.md
 ```
 
+## Get this
+
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme/__result__.md -->
+<!-- docsub: lines after 1 upto -1 -->
+````markdown
+# Title
+<!-- docsub: begin -->
+<!-- docsub: include info.md -->
+<!-- docsub: include features.md -->
+> Long description.
+* Feature 1
+* Feature 2
+* Feature 3
+<!-- docsub: end -->
+
+## Table
+<!-- docsub: begin -->
+<!-- docsub: include data.md -->
+<!-- docsub: lines after 2 -->
+| Col 1 | Col 2 |
+|-------|-------|
+| Key 1 | value 1 |
+| Key 2 | value 2 |
+| Key 3 | value 3 |
+<!-- docsub: end -->
+
+## Code
+<!-- docsub: begin #code -->
+<!-- docsub: include func.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+def func():
+    pass
+```
+<!-- docsub: end #code -->
+````
+<!-- docsub: end #readme -->
+
+## From these
+
 <table>
 <tr>
 <td style="vertical-align:top">
-
-## Before
 
 ### README.md
 <!-- docsub: begin #readme -->
@@ -95,6 +135,9 @@ $ uvx docsub -i README.md
 <!-- docsub: end #code -->
 ````
 <!-- docsub: end #readme -->
+
+</td>
+<td style="vertical-align:top">
 
 ### info.md
 <!-- docsub: begin #readme -->
@@ -138,54 +181,34 @@ def func():
 <!-- docsub: end #readme -->
 
 </td>
-<td style="vertical-align:top">
-
-## After
-
-### README.md
-<!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/__result__.md -->
-<!-- docsub: lines after 1 upto -1 -->
-````markdown
-# Title
-<!-- docsub: begin -->
-<!-- docsub: include info.md -->
-<!-- docsub: include features.md -->
-> Long description.
-* Feature 1
-* Feature 2
-* Feature 3
-<!-- docsub: end -->
-
-## Table
-<!-- docsub: begin -->
-<!-- docsub: include data.md -->
-<!-- docsub: lines after 2 -->
-| Col 1 | Col 2 |
-|-------|-------|
-| Key 1 | value 1 |
-| Key 2 | value 2 |
-| Key 3 | value 3 |
-<!-- docsub: end -->
-
-## Code
-<!-- docsub: begin #code -->
-<!-- docsub: include func.py -->
-<!-- docsub: lines after 1 upto -1 -->
-```python
-def func():
-    pass
-```
-<!-- docsub: end #code -->
-````
-<!-- docsub: end #readme -->
-
-</td>
 </tr>
 </table>
 
 
-# Substitution block
+# CLI Reference
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m docsub -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ docsub --help
+Usage: python -m docsub [OPTIONS] [FILE]...
+
+Update documentation files with external content.
+
+╭─ Options ────────────────────────────────────────────────╮
+│ --in-place  -i    Overwrite source files.                │
+│ --version         Show the version and exit.             │
+│ --help            Show this message and exit.            │
+╰──────────────────────────────────────────────────────────╯
+```
+<!-- docsub: end -->
+
+
+# Syntax reference
+
+## Substitution block
 
 ```markdown
 <!-- docsub: begin -->
@@ -212,26 +235,25 @@ For nested blocks, only top level substitution is performed. Use block `#identif
 <!-- docsub: end #top -->
 ```
 
-
-# Commands
+## Commands
 
 * Block delimiters: `begin`, `end`
 * *Producing commands*: `exec`, `help`, `include`
 * *Modifying commands*: `lines`, `strip`
 
-## `begin`
+### `begin`
 ```text
 begin [#identifier]
 ```
 Open substitution target block. To distinguish with nested blocks, use `#identifier` starting with `#`.
 
-## `end`
+### `end`
 ```text
 end [#identifier]
 ```
 Close substitution target block.
 
-## `exec`
+### `exec`
 ```text
 exec arbitrary commands
 ```
@@ -242,7 +264,7 @@ Config options:
 * `workdir` — shell working directory, default `'.'`
 * `env` — additional environment variables dict, default `{}`
 
-## `help`
+### `help`
 
 ```text
 help command [subcommand...]
@@ -254,7 +276,7 @@ Config options:
 
 * `env` — additional environment variables dict, default `{}`
 
-## `include`
+### `include`
 ```text
 include path/to/file
 ```
@@ -264,13 +286,13 @@ Config options:
 
 * `basedir` — base directory for relative paths
 
-## `lines`
+### `lines`
 ```text
 lines [after N] [upto -M]
 ```
 Upon substitution, keep original target block lines: first `N` and/or last `M`. Only one `lines` command is allowed inside the block.
 
-## `strip`
+### `strip`
 ```text
 strip
 ```
@@ -286,7 +308,11 @@ Configuration resolution order
 * `pyproject.toml`, section `[tool.docsub]` *(to be implemented)*
 * default config values
 
-### Structure
+## Environment variables
+
+*(to be documented)*
+
+## Example
 
 All config keys are optional.
 
@@ -309,38 +335,12 @@ basedir = "."  # default
 > [!WARNING]
 > In future releases config keys will be moved under `[tool.docsub]` root, this will be a breaking change.
 
-## Environment variables
-
-*(to be documented)*
-
 
 # Logging
 
 Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disabled by default. To enable logging, set config option `log_level` to one of [logging levels](https://loguru.readthedocs.io/en/stable/api/logger.html#levels) supported by loguru.
 
 *(logging is rudimentary at the moment)*
-
-
-
-# CLI Reference
-
-<!-- docsub: begin -->
-<!-- docsub: help python -m docsub -->
-<!-- docsub: lines after 2 upto -1 -->
-<!-- docsub: strip -->
-```shell
-$ docsub --help
-Usage: python -m docsub [OPTIONS] [FILE]...
-
-Update documentation files with external content.
-
-╭─ Options ────────────────────────────────────────────────╮
-│ --in-place  -i    Overwrite source files.                │
-│ --version         Show the version and exit.             │
-│ --help            Show this message and exit.            │
-╰──────────────────────────────────────────────────────────╯
-```
-<!-- docsub: end -->
 
 
 # History
