@@ -6,7 +6,7 @@ from ..__base__ import Substitution, Line, Location, Modifier
 
 N = r'[1-9][0-9]*'
 RX_LINES = re.compile(
-    fr'^(?:\s*after\s+(?P<first>{N}))?(?:\s*upto\s+-(?P<last>{N}))?\s*$'
+    rf'^(?:\s*after\s+(?P<first>{N}))?(?:\s*upto\s+-(?P<last>{N}))?\s*$'
 )
 
 

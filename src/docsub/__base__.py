@@ -10,21 +10,24 @@ from pydantic import BaseModel as Config
 
 # syntax
 
+
 @dataclass
 class Location:
     """
     Location in file.
     """
+
     fname: str | Path
     lineno: int | None = None
     colno: int | None = None
 
     def leader(self) -> str:
-        return ', '.join((
+        parts = (
             f'"{self.fname}"',
             *((f'line {self.lineno}',) if self.lineno is not None else ()),
             *((f'col {self.colno}',) if self.colno is not None else ()),
-        )) + ': '
+        )
+        return f'{', '.join(parts)}: '
 
 
 @dataclass
@@ -32,6 +35,7 @@ class SyntaxElement(ABC):
     """
     Base syntax element.
     """
+
     loc: Location
 
 
@@ -40,6 +44,7 @@ class Line(SyntaxElement):
     """
     Line in file.
     """
+
     text: str
 
     def __post_init__(self) -> None:
@@ -49,11 +54,13 @@ class Line(SyntaxElement):
 
 # substitution
 
+
 @dataclass(kw_only=True)
 class Substitution(SyntaxElement, ABC):
     """
     Base substitution request.
     """
+
     id: str | None = None
     conf: Any
     producers: list['Producer'] = field(default_factory=list)
@@ -100,7 +107,9 @@ class Substitution(SyntaxElement, ABC):
     def _modified_lines(self, line: Line) -> Iterable[Line]:
         lines = (line,)  # type: tuple[Line, ...]
         for cmd in self.modifiers:
-            lines = tuple(chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines))
+            lines = tuple(
+                chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines)
+            )
         yield from lines
 
 
@@ -108,6 +117,7 @@ class Command(ABC):
     """
     Base command.
     """
+
     name: ClassVar[str]
     conftype: ClassVar[type[Config] | None]
 
@@ -131,17 +141,24 @@ class Command(ABC):
 
     @classmethod
     def error_invalid_args(cls, args: str, loc: Location) -> 'InvalidCommand':
-        return InvalidCommand(f'Invalid docsub command "{cls.name}" args: {args}', loc=loc)
+        return InvalidCommand(
+            f'Invalid docsub command "{cls.name}" args: {args}', loc=loc,
+        )
 
     def error_runtime(self, args: Any) -> 'RuntimeCommandError':
-        return RuntimeCommandError(f'Runtime error in "{self.name}" command: {args}', loc=self.loc)
+        return RuntimeCommandError(
+            f'Runtime error in "{self.name}" command: {args}', loc=self.loc,
+        )
 
 
 class Producer(Command, ABC):
     """
     Base producing command.
     """
-    def __init_subclass__(cls, *, name: str, conftype: type[Config] | None = None, **kwargs):
+
+    def __init_subclass__(
+        cls, *, name: str, conftype: type[Config] | None = None, **kwargs,
+    ):
         super().__init_subclass__(**kwargs)
         cls.name = name
         cls.conftype = conftype
@@ -155,7 +172,10 @@ class Modifier(Command, ABC):
     """
     Base modifying command.
     """
-    def __init_subclass__(cls, *, name: str, conftype: type[Config] | None = None, **kwargs):
+
+    def __init_subclass__(
+        cls, *, name: str, conftype: type[Config] | None = None, **kwargs,
+    ):
         super().__init_subclass__(**kwargs)
         cls.name = name
         cls.conftype = conftype
@@ -175,11 +195,13 @@ class Modifier(Command, ABC):
 
 # exceptions
 
+
 @dataclass
 class DocsubError(Exception):
     """
     Generic docsub error.
     """
+
     message: str
     loc: Location | None
 

@@ -16,11 +16,13 @@ class HelpConfig(Config):
 
 
 CMD = r'[-._a-zA-Z0-9]+'
-RX_CMD = re.compile(fr'^\s*(?P<python>python\s+-m\s+)?(?P<cmd>{CMD}(\s+{CMD})*)\s*$')
+RX_CMD = re.compile(rf'^\s*(?P<python>python\s+-m\s+)?(?P<cmd>{CMD}(\s+{CMD})*)\s*$')
 
 
 class HelpCommand(Producer, name='help', conftype=HelpConfig):
-    def __init__(self, cmd: str, use_python: bool, conf: HelpConfig, loc: Location) -> None:
+    def __init__(
+        self, cmd: str, use_python: bool, conf: HelpConfig, loc: Location,
+    ) -> None:
         super().__init__(loc)
         self.conf = conf
         self.cmd = cmd.strip()
@@ -32,7 +34,8 @@ class HelpCommand(Producer, name='help', conftype=HelpConfig):
         conf = cls.assert_conf(conf, HelpConfig)
         if (m := RX_CMD.match(args)) is None:
             raise cls.error_invalid_args(args, loc=loc)
-        return cls(cmd=m.group('cmd'), use_python=bool(m.group('python')), conf=conf, loc=loc)
+        use_python = bool(m.group('python'))
+        return cls(cmd=m.group('cmd'), use_python=use_python, conf=conf, loc=loc)
 
     @override
     def produce(self, ctx: Substitution) -> Iterable[Line]:

@@ -18,11 +18,13 @@ from ..config import DocsubSettings
 
 RX_FENCE = re.compile(r'^(?P<indent>\s*)(?P<fence>```+|~~~+).*$')
 
-PREFIX = r'^\s*<!--\s*docsub:'
-RX_DOCSUB = re.compile(PREFIX)
-RX_BEGIN = re.compile(PREFIX + r'\s*begin(?:\s+#(?P<id>\S+))?\s*-->\s*$')
-RX_END = re.compile(PREFIX + r'\s*end(?:\s+#(?P<id>\S+))?\s*-->\s*$')
-RX_COMMAND = re.compile(PREFIX + fr'\s*(?P<name>{'|'.join(COMMANDS)})(\s+(?P<args>\S.*))?\s*-->\s*')
+DOCSUB_PREFIX = r'^\s*<!--\s*docsub:'
+RX_DOCSUB = re.compile(DOCSUB_PREFIX)
+RX_BEGIN = re.compile(DOCSUB_PREFIX + r'\s*begin(?:\s+#(?P<id>\S+))?\s*-->\s*$')
+RX_END = re.compile(DOCSUB_PREFIX + r'\s*end(?:\s+#(?P<id>\S+))?\s*-->\s*$')
+RX_CMD = re.compile(
+    DOCSUB_PREFIX + rf'\s*(?P<name>{"|".join(COMMANDS)})(\s+(?P<args>\S.*))?\s*-->\s*'
+)
 
 
 @dataclass
@@ -59,10 +61,12 @@ class BlockSubstitution(Substitution):
             return
 
         # command?
-        if m := RX_COMMAND.match(line.text):
+        if m := RX_CMD.match(line.text):
             name = m.group('name')
             conf = getattr(self.conf.command, name, None)
-            cmd = COMMANDS[name].parse_args(m.group('args') or '', conf=conf, loc=line.loc)
+            cmd = COMMANDS[name].parse_args(
+                m.group('args') or '', conf=conf, loc=line.loc,
+            )
             self.append_command(cmd)
             yield line
             return
@@ -73,15 +77,13 @@ class BlockSubstitution(Substitution):
         self.process_content_line(line)
         return
 
-
     def validate_assumptions(self) -> None:
         """
         Validate block assumptions.
         """
         if not len(self.producers):
             raise InvalidSubstitution(
-                'Block must contain producing command',
-                loc=self.loc
+                'Block must contain producing command', loc=self.loc,
             )
 
 

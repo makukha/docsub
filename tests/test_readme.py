@@ -10,4 +10,7 @@ def test_readme(data_path, python, monkeypatch):
 
     # in-place
     check_output([python, '-m', 'docsub', '-i', 'README.md'])
-    assert (data_path / 'README.md').read_text() == (data_path / '__result__.md').read_text()
+    assert (
+        (data_path / 'README.md').read_text()
+        == (data_path / '__result__.md').read_text()
+    )
