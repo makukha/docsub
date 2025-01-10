@@ -38,9 +38,28 @@ tasks:
     desc: Build package.
     cmds:
       - uv lock
-      - uv run python -m docsub -i README.md  # eating my own dog food
       - rm -rf dist
       - uv build
+
+  docs:
+    desc: Update docs.
+    cmds:
+      - uv run python -m docsub -i README.md  # eating my own dog food
+
+  #
+  #  RELEASE PROCES
+  # ----------------
+  #
+  # > task lint
+  # > task test
+  # > task docs
+  # > task release:version -- [patch|minor|major]
+  # > task release:changelog
+  # > (proofread changelog)
+  # > task docs
+  # > task build
+  # > task release:publish
+  #
 
   release:version:
     desc: Bump release version.
@@ -53,7 +72,7 @@ tasks:
     vars:
       VERSION: {sh: uv run bump-my-version show current_version 2>/dev/null}
     cmds:
-      - towncrier build --yes --version "{{.VERSION}}"
+      - uv run towncrier build --yes --version "{{.VERSION}}"
 
   release:publish:
     desc: Publish package on PyPI.
