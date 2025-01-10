@@ -10,25 +10,34 @@
 
 # Features
 
-* Short but powerful set of commands
+* Insert static files and dynamic results
+* Invisible markup inside comment blocks
 * Idempotent substitutions
-* Supports Markdown
+* Configurable
+* Plays nicely with other markups
 
 > [!NOTE]
-> This file itself uses docsub to substitute README examples from `tests` folder. Dig into raw markup if interested.
+> This file itself uses [docsub]() to substitute README examples from `tests` folder. Dig into raw markup if interested.
+
+## Missing features
+
+* Backups
+* Dependency discovery
+* Extensibility by end user
+* Detailed logging
 
 
 # Use cases
 
-* Markdown docs with CLI usage examples
-* Markdown docs with datasets rendered as tables
-* Synchronized docs for multiple targets: GitHub README, PyPI README, documentation website.
+* Synchronized docs for multiple targets: GitHub README, PyPI README, Sphinx docs, etc.
+* Embed dynamically generated data as tables
+* CLI usage examples
 
-# Non-use cases
+## Non-use cases
 
+* Not a documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org).
+* Not a templating engine like [Jinja](https://jinja.palletsprojects.com).
 * Not a replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
-* Not a full-featured documentation engine like [Sphinx](https://www.sphinx-doc.org)
-* Not a full-featured templating language like [Jinja](https://jinja.palletsprojects.com).
 
 
 # Installation
