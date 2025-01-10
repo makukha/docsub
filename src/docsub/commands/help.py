@@ -21,7 +21,11 @@ RX_CMD = re.compile(rf'^\s*(?P<python>python\s+-m\s+)?(?P<cmd>{CMD}(\s+{CMD})*)\
 
 class HelpCommand(Producer, name='help', conftype=HelpConfig):
     def __init__(
-        self, cmd: str, use_python: bool, conf: HelpConfig, loc: Location,
+        self,
+        cmd: str,
+        use_python: bool,
+        conf: HelpConfig,
+        loc: Location,
     ) -> None:
         super().__init__(loc)
         self.conf = conf

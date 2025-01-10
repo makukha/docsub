@@ -65,7 +65,9 @@ class BlockSubstitution(Substitution):
             name = m.group('name')
             conf = getattr(self.conf.command, name, None)
             cmd = COMMANDS[name].parse_args(
-                m.group('args') or '', conf=conf, loc=line.loc,
+                args=m.group('args') or '',
+                conf=conf,
+                loc=line.loc,
             )
             self.append_command(cmd)
             yield line
@@ -83,7 +85,8 @@ class BlockSubstitution(Substitution):
         """
         if not len(self.producers):
             raise InvalidSubstitution(
-                'Block must contain producing command', loc=self.loc,
+                'Block must contain producing command',
+                loc=self.loc,
             )
 
 

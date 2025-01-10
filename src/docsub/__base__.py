@@ -27,7 +27,7 @@ class Location:
             *((f'line {self.lineno}',) if self.lineno is not None else ()),
             *((f'col {self.colno}',) if self.colno is not None else ()),
         )
-        return f'{', '.join(parts)}: '
+        return f'{", ".join(parts)}: '
 
 
 @dataclass
@@ -142,12 +142,14 @@ class Command(ABC):
     @classmethod
     def error_invalid_args(cls, args: str, loc: Location) -> 'InvalidCommand':
         return InvalidCommand(
-            f'Invalid docsub command "{cls.name}" args: {args}', loc=loc,
+            f'Invalid docsub command "{cls.name}" args: {args}',
+            loc=loc,
         )
 
     def error_runtime(self, args: Any) -> 'RuntimeCommandError':
         return RuntimeCommandError(
-            f'Runtime error in "{self.name}" command: {args}', loc=self.loc,
+            f'Runtime error in "{self.name}" command: {args}',
+            loc=self.loc,
         )
 
 
@@ -157,7 +159,11 @@ class Producer(Command, ABC):
     """
 
     def __init_subclass__(
-        cls, *, name: str, conftype: type[Config] | None = None, **kwargs,
+        cls,
+        *,
+        name: str,
+        conftype: type[Config] | None = None,
+        **kwargs,
     ):
         super().__init_subclass__(**kwargs)
         cls.name = name
@@ -174,7 +180,11 @@ class Modifier(Command, ABC):
     """
 
     def __init_subclass__(
-        cls, *, name: str, conftype: type[Config] | None = None, **kwargs,
+        cls,
+        *,
+        name: str,
+        conftype: type[Config] | None = None,
+        **kwargs,
     ):
         super().__init_subclass__(**kwargs)
         cls.name = name
