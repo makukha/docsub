@@ -8,6 +8,26 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.5.0](https://github.com/makukha/docsub/releases/tag/v0.5.0) — 2025-01-10
+
+### Breaking 🔥
+
+- Completely changed syntax and command available ([#36](https://github.com/makukha/docsub/issues/36))
+
+### Added 🌿
+
+- Logging with [loguru](https://loguru.readthedocs.io) ([#11](https://github.com/makukha/docsub/issues/11))
+
+### Docs
+
+- Updated project metadata ([#29](https://github.com/makukha/docsub/issues/29))
+
+### Misc
+
+- Started using docsub for self README management ([#36](https://github.com/makukha/docsub/issues/36))
+- Started using [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings) for settings management ([#37](https://github.com/makukha/docsub/issues/37))
+
+
 ## [v0.4.0](https://github.com/makukha/docsub/releases/tag/v0.4.0) — 2024-12-30
 
 ### Added 🌿
