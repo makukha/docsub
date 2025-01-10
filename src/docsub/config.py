@@ -43,7 +43,7 @@ def load_config() -> DocsubSettings:
     """
     Load config from file.
     """
-    conf = DocsubSettings()
-    configure_logging(conf.logging)
+    conf = DocsubSettings()  # type: ignore
+    configure_logging(conf.logging)  # type: ignore
     logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
     return conf
