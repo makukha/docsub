@@ -1,5 +1,5 @@
 # docsub
-> Composable Markdown docs made easy.
+> Embed text and data into Markdown files
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
 [![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/tox-multipython)

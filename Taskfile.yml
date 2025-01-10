@@ -47,16 +47,18 @@ tasks:
       - uv run python -m docsub -i README.md  # eating my own dog food
 
   #
-  #  RELEASE PROCES
-  # ----------------
+  #  RELEASE
+  # ---------
   #
   # > task lint
   # > task test
   # > task docs
+  #
   # > task release:version -- [patch|minor|major]
   # > task release:changelog
   # > (proofread changelog)
   # > task docs
+  #
   # > task build
   # > task release:publish
   #
