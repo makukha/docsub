@@ -1,36 +1,25 @@
-from dataclasses import dataclass, field
+from typing import Annotated
 
-from .base import BaseCommand, InvalidCommand
-from .cat import CatCommand
-from .help import HelpCommand
-from .sh import ShCommand
+from pydantic import Field
 
-
-@dataclass
-class CommandsConfig:
-    cat: CatCommand.confclass = field(default_factory=CatCommand.confclass)
-    help: HelpCommand.confclass = field(default_factory=HelpCommand.confclass)
-    sh: ShCommand.confclass = field(default_factory=ShCommand.confclass)
+from ..__base__ import Command, Config
+from .exec import ExecCommand, ExecConfig
+from .help import HelpCommand, HelpConfig
+from .include import IncludeCommand, IncludeConfig
+from .lines import LinesCommand
+from .strip import StripCommand
 
 
-COMMANDS: dict[str, BaseCommand] = {
-    CatCommand.name: CatCommand,
-    HelpCommand.name: HelpCommand,
-    ShCommand.name: ShCommand,
-}
+COMMANDS: dict[str, type[Command]] = dict(
+    exec=ExecCommand,
+    help=HelpCommand,
+    include=IncludeCommand,
+    lines=LinesCommand,
+    strip=StripCommand,
+)
 
 
-def parse_command(statement: str, conf: CommandsConfig) -> BaseCommand:
-    # get name
-    try:
-        name, args = statement.split(maxsplit=1)
-    except Exception as exc:
-        raise InvalidCommand(f'Invalid docsub command "{statement}"') from exc
-
-    # validate name
-    if name not in COMMANDS:
-        raise InvalidCommand(f'Unknown docsub command name "{name}"')
-
-    # instantiate command
-    command = COMMANDS[name].from_args(args, conf=getattr(conf, name))
-    return command
+class CommandsConfig(Config):
+    exec: Annotated[ExecConfig, Field(default_factory=ExecConfig)]
+    help: Annotated[HelpConfig, Field(default_factory=HelpConfig)]
+    include: Annotated[IncludeConfig, Field(default_factory=IncludeConfig)]

@@ -1,25 +1,29 @@
 from pathlib import Path
 
-import rich_click as click
+import rich_click as click  # type: ignore
 
 from . import __version__
 from .config import load_config
-from .formats import process_paths
+from .process import process_paths
 
 
 @click.command()
 @click.option(
-    '-i/ ', '--in-place/ ', is_flag=True, default=False, show_default=True,
+    '-i/ ',
+    '--in-place/ ',
+    is_flag=True,
+    default=False,
+    show_default=True,
     help='Overwrite source files.',
 )
 @click.version_option(__version__)
 @click.argument(
-    'file', nargs=-1,
+    'file',
+    nargs=-1,
     type=click.Path(exists=True, dir_okay=False, readable=True, path_type=Path),
 )
 def cli(file: list[str], in_place: bool):
     """
     Update documentation files with external content.
     """
-    conf = load_config()
-    process_paths((Path(p) for p in file), in_place=in_place, conf=conf)
+    process_paths((Path(p) for p in file), in_place=in_place, conf=load_config())

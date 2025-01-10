@@ -1,2 +1,5 @@
 [command.help]
-env = {COLUMNS = "60"}
+env = { COLUMNS = "60" }
+
+[logging]
+level = "DEBUG"
