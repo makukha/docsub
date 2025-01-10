@@ -11,6 +11,18 @@ dependencies = [
   "rich-click~=1.8",
 ]
 
+[dependency-groups]
+dev = [
+  "bump-my-version; python_version>='3.13'",
+  "caseutil; python_version>='3.13'",
+  "mypy; python_version>='3.13'",
+  "pytest~=8.3; python_version>='3.13'",
+  "pytest-cov~=6.0; python_version>='3.13'",
+  "pytest-sugar~=1.0; python_version>='3.13'",
+  "ruff; python_version>='3.13'",
+  "towncrier; python_version>='3.13'",
+]
+
 [project.scripts]
 docsub = "docsub.cli:cli"
 
@@ -18,13 +30,6 @@ docsub = "docsub.cli:cli"
 Repository = "https://github.com/makukha/docsub"
 Issues = "https://github.com/makukha/docsub/issues"
 Changelog = "https://github.com/makukha/docsub/releases"
-
-[dependency-groups]
-dev = [
-  "pytest~=8.3",
-  "pytest-cov~=6.0",
-  "pytest-sugar~=1.0",
-]
 
 [build-system]
 requires = ["hatchling"]

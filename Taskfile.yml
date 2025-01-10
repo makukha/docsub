@@ -5,24 +5,28 @@ tasks:
   init:
     desc: Init local dev environment.
     cmds:
-      - cmd: uv tool install "{{.ITEM}}"
-        for: [bump-my-version, mypy, ruff, towncrier]
       - uv sync
 
-  news:*:
-    desc: Create news item {added|changed|deprecated|docs|fixed|misc|removed|security}.
-    vars:
-      ISSUE: {sh: git rev-parse --abbrev-ref HEAD | cut -d- -f1}
-      SECTION: '{{index .MATCH 0}}'
+  news:
+    desc: Show available news categories.
     cmds:
-      - uvx towncrier create -c "{{.CLI_ARGS}}" "{{.ISSUE}}.{{.SECTION}}.md"
+      - yq '.tool.towncrier.type[].name' -oj -r pyproject.toml
+
+  news:*:
+    desc: Create news item in category.
+    vars:
+      SECTION: '{{index .MATCH 0}}'
+      ISSUE: {sh: git rev-parse --abbrev-ref HEAD | cut -d- -f1}
+      MSG: {sh: "git rev-parse --abbrev-ref HEAD | sed 's/^[0-9][0-9]*-//' | uv run caseutil -csentence"}
+    cmds:
+      - uv run towncrier create -c '{{default .CLI_ARGS .MSG}}' "{{.ISSUE}}.{{.SECTION}}.md"
 
   lint:
     desc: Run linters.
     cmds:
-      - uvx mypy src tests
-      - uvx ruff check
-      - uvx ruff format --check
+      - uv run mypy src tests
+      - uv run ruff check
+      - uv run ruff format --check
 
   test:
     desc: Run tests.
@@ -41,13 +45,13 @@ tasks:
   release:version:
     desc: Bump release version.
     cmds:
-      - uvx bump-my-version bump -- {{.CLI_ARGS}}
+      - uv run bump-my-version bump -- {{.CLI_ARGS}}
       - uv lock
 
   release:changelog:
     desc: Collect changelog entries.
     vars:
-      VERSION: {sh: uvx bump-my-version show current_version 2>/dev/null}
+      VERSION: {sh: uv run bump-my-version show current_version 2>/dev/null}
     cmds:
       - towncrier build --yes --version "{{.VERSION}}"
 
