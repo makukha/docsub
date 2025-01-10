@@ -47,7 +47,7 @@ class LinesCommand(Modifier, name='lines'):
         elif self.last == 0:
             pass  # no need to update trailing range
         else:
-            assert False, 'unreachable'
+            raise AssertionError('unreachable')
 
     @override
     def before_producers(self, ctx: Substitution) -> Iterable[Line]:
