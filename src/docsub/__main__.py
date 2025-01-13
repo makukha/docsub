@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 
 from cyclopts import App, Parameter
 from cyclopts.types import ExistingFile
@@ -14,18 +14,19 @@ app = App(version=__version__)
 
 @app.default
 def docsub(
-    in_place: Annotated[bool, Parameter(name=('--in-place', '-i'))] = False,
-    *file: ExistingFile,
+    file: Annotated[list[ExistingFile], Parameter(negative=())],
+    /,
+    in_place: Annotated[Optional[bool], Parameter(('--in-place', '-i'), negative=())] = False,
 ):
     """
     Update Markdown files with embedded content.
 
     Parameters
     ----------
-    in_place
-        Process files in-place.
     file
         Markdown files to be processed in order.
+    in_place
+        Process files in-place.
     """
     process_paths((Path(p) for p in file), in_place=in_place, conf=load_config())
 

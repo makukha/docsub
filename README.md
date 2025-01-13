@@ -80,7 +80,7 @@ $ uvx docsub -i README.md
 ## Get this
 
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/__result__.md -->
+<!-- docsub: include tests/test_readme_showcase/__result__.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 # Title
@@ -124,7 +124,7 @@ def func():
 
 ### README.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/__input__.md -->
+<!-- docsub: include tests/test_readme_showcase/__input__.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 # Title
@@ -159,7 +159,7 @@ def func():
 
 ### info.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/info.md -->
+<!-- docsub: include tests/test_readme_showcase/info.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 > Long description.
@@ -168,7 +168,7 @@ def func():
 
 ### features.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/features.md -->
+<!-- docsub: include tests/test_readme_showcase/features.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 * Feature 1
@@ -179,7 +179,7 @@ def func():
 
 ### data.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/data.md -->
+<!-- docsub: include tests/test_readme_showcase/data.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 | Key 1 | value 1 |
@@ -190,7 +190,7 @@ def func():
 
 ### func.py
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/func.py -->
+<!-- docsub: include tests/test_readme_showcase/func.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ````python
 def func():
@@ -216,7 +216,8 @@ Usage: docsub COMMAND [ARGS] [OPTIONS]
 Update Markdown files with embedded content.
 
 ╭─ Arguments ──────────────────────────────────────────────╮
-│ FILE  Markdown files to be processed in order.           │
+│ *  FILE  Markdown files to be processed in order.        │
+│          [required]                                      │
 ╰──────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────╮
 │ --help -h  Display this message and exit.                │
@@ -224,7 +225,7 @@ Update Markdown files with embedded content.
 ╰──────────────────────────────────────────────────────────╯
 ╭─ Parameters ─────────────────────────────────────────────╮
 │ IN-PLACE --in-place  -i  Process files in-place.         │
-│   --no-in-place          [default: False]                │
+│                          [default: False]                │
 ╰──────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
@@ -335,7 +336,11 @@ When project root contains file `docsubfile.py` with commands defined as in exam
 
 `<!-- docsub: x <custom-command> [options and args] -->`
 
-The `x` command can be regarded as a shortcut to `{sys.executable} docsubfile.py <custom-command> [options and args]`, where `{sys.executable}` is python interpreter used to invoke docsub. This has important consequences:
+The `x` command can be regarded as a shortcut to
+
+`{sys.executable} docsubfile.py <custom-command> [options and args]`,
+
+where `{sys.executable}` is python interpreter used to invoke docsub. This has important consequences:
 
 - If docsub is installed globally and called as e.g. `uvx docsub`, user commands in `docsubfile.py` are allowed to use `cyclopts` and `loguru`, which are installed by docsub itself.
 
@@ -348,16 +353,34 @@ $ docsub -i sample.md
 ```
 
 ### sample.md
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme_docsubfile/__result__.md -->
+<!-- docsub: lines after 1 upto -1 -->
 ```markdown
 <!-- docsub: begin -->
 <!-- docsub: x say-hello Bob -->
 Hi there, Bob!
 <!-- docsub: end -->
 ```
+<!-- docsub: end #readme -->
 
 ### docsubfile.py
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme_docsubfile/docsubfile.py -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
+from cyclopts import App
+
+app = App()
+
+@app.command
+def say_hello(username: str, /):  # positional-only parameters
+    print(f'Hi there, {username}!')
+
+if __name__ == '__main__':
+    app()
 ```
+<!-- docsub: end #readme -->
 
 
 # Configuration
