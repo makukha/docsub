@@ -39,12 +39,14 @@
 * Synchronized docs for multiple targets: GitHub README, PyPI README, Sphinx docs, etc.
 * Embed dynamically generated data as tables
 * CLI usage examples
+* Simple static web pages with updatable content
 
 ## Non-use cases
 
 * Not a documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org).
 * Not a templating engine like [Jinja](https://jinja.palletsprojects.com).
 * Not a replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
+* Not a full-featured static website generator
 
 
 # Installation
@@ -193,14 +195,20 @@ def func():
 <!-- docsub: strip -->
 ```shell
 $ docsub --help
-Usage: python -m docsub [OPTIONS] [FILE]...
+Usage: docsub COMMAND [ARGS] [OPTIONS]
 
-Update documentation files with external content.
+Update Markdown files with embedded content.
 
-╭─ Options ────────────────────────────────────────────────╮
-│ --in-place  -i    Overwrite source files.                │
-│ --version         Show the version and exit.             │
-│ --help            Show this message and exit.            │
+╭─ Arguments ──────────────────────────────────────────────╮
+│ FILE  Markdown files to be processed in order.           │
+╰──────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────╮
+│ --help -h  Display this message and exit.                │
+│ --version  Display application version.                  │
+╰──────────────────────────────────────────────────────────╯
+╭─ Parameters ─────────────────────────────────────────────╮
+│ IN-PLACE --in-place  -i  Process files in-place.         │
+│   --no-in-place          [default: False]                │
 ╰──────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
