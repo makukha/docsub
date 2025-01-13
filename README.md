@@ -14,40 +14,54 @@
 > * If still want to try it, use pinned package version `docsub==0.5.0`
 
 
+# Use cases
+
+* Manage docs for multiple targets without duplication: GitHub, PyPI, Docker Hub, ...
+* Embed dynamically generated tabular data:
+  * Models evaluation results
+  * Dependencies summary
+  * Test reports
+* CLI user reference
+
+
 # Features
 
 * Insert static files and dynamic results
+* Plays nicely with other markups
 * Invisible markup inside comment blocks
 * Idempotent substitutions
+* Custom user-defined commands
 * Configurable
-* Plays nicely with other markups
 
 > [!NOTE]
 > This file uses [docsub]() itself. Dig into raw markup if interested.
 
-## Planned features
+## Docsub is not a...
 
-* More commands
-* Backup target files
-* Dependency discovery
-* Extensibility by end user
-* Detailed logging
-
-
-# Use cases
-
-* Synchronized docs for multiple targets: GitHub README, PyPI README, Sphinx docs, etc.
-* Embed dynamically generated data as tables
-* CLI usage examples
-
-## Non-use cases
-
-* Not a documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org).
-* Not a templating engine like [Jinja](https://jinja.palletsprojects.com).
-* Not a replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
+* documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org)
+* templating engine like [Jinja](https://jinja.palletsprojects.com)
+* replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
+* full-featured static website generator like [Pelican](https://getpelican.com)
 
 
 # Installation
+
+## Development dependency
+
+The most flexible recommended option, see [Custom commands](#custom-commands)
+
+```toml
+# pyproject.toml
+...
+[dependency-groups]
+dev = [
+  "docsub==0.5.0",
+]
+```
+
+## Global installation
+
+Works for simple cases.
 
 ```shell
 uv tool install docsub==0.5.0
@@ -56,13 +70,17 @@ uv tool install docsub==0.5.0
 # Basic usage
 
 ```shell
+$ uv run docsub -i README.md
+```
+
+```shell
 $ uvx docsub -i README.md
 ```
 
 ## Get this
 
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/__result__.md -->
+<!-- docsub: include tests/test_readme_showcase/__result__.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 # Title
@@ -106,7 +124,7 @@ def func():
 
 ### README.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/README.md -->
+<!-- docsub: include tests/test_readme_showcase/__input__.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 # Title
@@ -141,7 +159,7 @@ def func():
 
 ### info.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/info.md -->
+<!-- docsub: include tests/test_readme_showcase/info.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 > Long description.
@@ -150,7 +168,7 @@ def func():
 
 ### features.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/features.md -->
+<!-- docsub: include tests/test_readme_showcase/features.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 * Feature 1
@@ -161,7 +179,7 @@ def func():
 
 ### data.md
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/data.md -->
+<!-- docsub: include tests/test_readme_showcase/data.md -->
 <!-- docsub: lines after 1 upto -1 -->
 ````markdown
 | Key 1 | value 1 |
@@ -172,7 +190,7 @@ def func():
 
 ### func.py
 <!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme/func.py -->
+<!-- docsub: include tests/test_readme_showcase/func.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ````python
 def func():
@@ -193,14 +211,21 @@ def func():
 <!-- docsub: strip -->
 ```shell
 $ docsub --help
-Usage: python -m docsub [OPTIONS] [FILE]...
+Usage: docsub COMMAND [ARGS] [OPTIONS]
 
-Update documentation files with external content.
+Update Markdown files with embedded content.
 
-╭─ Options ────────────────────────────────────────────────╮
-│ --in-place  -i    Overwrite source files.                │
-│ --version         Show the version and exit.             │
-│ --help            Show this message and exit.            │
+╭─ Arguments ──────────────────────────────────────────────╮
+│ *  FILE  Markdown files to be processed in order.        │
+│          [required]                                      │
+╰──────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────╮
+│ --help -h  Display this message and exit.                │
+│ --version  Display application version.                  │
+╰──────────────────────────────────────────────────────────╯
+╭─ Parameters ─────────────────────────────────────────────╮
+│ IN-PLACE --in-place  -i  Process files in-place.         │
+│                          [default: False]                │
 ╰──────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
@@ -238,7 +263,7 @@ For nested blocks, only top level substitution is performed. Use block `#identif
 ## Commands
 
 * Block delimiters: `begin`, `end`
-* *Producing commands*: `exec`, `help`, `include`
+* *Producing commands*: `exec`, `help`, `include`, `x`
 * *Modifying commands*: `lines`, `strip`
 
 ### `begin`
@@ -297,6 +322,65 @@ Upon substitution, keep original target block lines: first `N` and/or last `M`. 
 strip
 ```
 Strip trailing whitespaces on every line of substitution result; strip initial and trailing blank lines of substitution result.
+
+### `x`
+```text
+x <custom-command> [options and args]
+```
+Execute custom command declared in `docsubfile.py` in project root, see [Custom commands](#custom-commands) for details and examples. The naming is inspired by `X-` HTTP headers and `x-` YAML sections in e.g. Docker Compose.
+
+
+# Custom commands
+
+When project root contains file `docsubfile.py` with commands defined as in example below, they can be used as `docsub: x ...` commands. User commands can be defined as [cyclopts](https://cyclopts.readthedocs.io), or [click](https://click.palletsprojects.com), or whatever commands. If using `cyclopts`, there is no need to install it separately, docsub uses it internally and it is always available to its Python interpreter.
+
+`<!-- docsub: x <custom-command> [options and args] -->`
+
+The `x` command can be regarded as a shortcut to
+
+`{sys.executable} docsubfile.py <custom-command> [options and args]`,
+
+where `{sys.executable}` is python interpreter used to invoke docsub. This has important consequences:
+
+- If docsub is installed globally and called as e.g. `uvx docsub`, user commands in `docsubfile.py` are allowed to use `cyclopts` and `loguru`, which are installed by docsub itself.
+
+- If docsub is installed as project dev dependency and called as e.g. `uv run docsub`, user commands also have access to project modules and dev dependencies. This allows more flexible scenarios.
+
+## Example
+
+```shell
+$ docsub -i sample.md
+```
+
+### sample.md
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme_docsubfile/__result__.md -->
+<!-- docsub: lines after 1 upto -1 -->
+```markdown
+<!-- docsub: begin -->
+<!-- docsub: x say-hello Bob -->
+Hi there, Bob!
+<!-- docsub: end -->
+```
+<!-- docsub: end #readme -->
+
+### docsubfile.py
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme_docsubfile/docsubfile.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+from cyclopts import App
+
+app = App()
+
+@app.command
+def say_hello(username: str, /):  # positional-only parameters
+    print(f'Hi there, {username}!')
+
+if __name__ == '__main__':
+    app()
+```
+<!-- docsub: end #readme -->
 
 
 # Configuration
