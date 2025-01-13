@@ -1,5 +1,4 @@
 from collections.abc import Iterable
-import os
 from pathlib import Path
 import re
 import shlex
@@ -14,8 +13,7 @@ DOCSUBFILE = Path('docsubfile.py').resolve()
 RX_CMD = re.compile(r'^\s*(?P<cmd>\S+)(\s+(?P<opts>.*))?$')
 
 
-class DocsubfileNotFound(DocsubError, FileNotFoundError):
-    ...
+class DocsubfileNotFound(DocsubError, FileNotFoundError): ...
 
 
 class XCommand(Producer, name='x'):

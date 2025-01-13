@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 from cyclopts import App, Parameter
 from cyclopts.types import ExistingFile
@@ -16,7 +16,7 @@ app = App(version=__version__)
 def docsub(
     file: Annotated[list[ExistingFile], Parameter(negative=())],
     /,
-    in_place: Annotated[Optional[bool], Parameter(('--in-place', '-i'), negative=())] = False,
+    in_place: Annotated[bool, Parameter(('--in-place', '-i'), negative=())] = False,
 ):
     """
     Update Markdown files with embedded content.
