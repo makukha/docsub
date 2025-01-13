@@ -8,6 +8,21 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.6.0](https://github.com/makukha/docsub/releases/tag/v0.6.0) — 2025-01-13
+
+### Added 🌿
+
+- New *producing* command `docsub: x` to run commands from project-local `docsubfile.py` ([#46](https://github.com/makukha/docsub/issues/46))
+
+### Docs
+
+- Updated docs ([#42](https://github.com/makukha/docsub/issues/42))
+
+### Misc
+
+- Changed [click](https://click.palletsprojects.com) to [cyclopts](https://cyclopts.readthedocs.io) ([#46](https://github.com/makukha/docsub/issues/46))
+
+
 ## [v0.5.0](https://github.com/makukha/docsub/releases/tag/v0.5.0) — 2025-01-10
 
 ### Breaking 🔥
