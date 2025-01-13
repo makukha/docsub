@@ -8,6 +8,7 @@ from .help import HelpCommand, HelpConfig
 from .include import IncludeCommand, IncludeConfig
 from .lines import LinesCommand
 from .strip import StripCommand
+from .x import XCommand
 
 
 COMMANDS: dict[str, type[Command]] = dict(
@@ -16,6 +17,7 @@ COMMANDS: dict[str, type[Command]] = dict(
     include=IncludeCommand,
     lines=LinesCommand,
     strip=StripCommand,
+    x=XCommand,
 )
 
 
