@@ -9,7 +9,7 @@ from ..__base__ import Config, Line, Location, Producer, Substitution
 
 
 class IncludeConfig(Config):
-    basedir: Annotated[Path, Field(default_factory=Path)]
+    base_dir: Annotated[Path, Field(default_factory=Path)]
 
 
 RX_PATH = re.compile(r'^\s*(?P<path>\S.*)$')
@@ -20,7 +20,7 @@ class IncludeCommand(Producer, name='include', conftype=IncludeConfig):
         super().__init__(loc)
         self.conf = conf
         p = Path(path.strip())
-        self.path = p if p.is_absolute() else (Path(self.conf.basedir) / p).resolve()
+        self.path = p if p.is_absolute() else (Path(self.conf.base_dir) / p).resolve()
 
     @override
     @classmethod

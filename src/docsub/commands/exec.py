@@ -11,7 +11,7 @@ from ..__base__ import Config, Line, Location, Producer, Substitution
 
 
 class ExecConfig(Config):
-    workdir: Annotated[Path, Field(default_factory=Path)]
+    work_dir: Annotated[Path, Field(default_factory=Path)]
     env: Annotated[dict[str, str], Field(default_factory=dict)]
 
 
@@ -39,7 +39,7 @@ class ExecCommand(Producer, name='exec', conftype=ExecConfig):
                 args=['sh', '-c', self.cmd],
                 env=dict(os.environ) | self.conf.env,
                 text=True,
-                cwd=self.conf.workdir,
+                cwd=self.conf.work_dir,
             )
         except Exception as exc:
             raise self.error_runtime(self.cmd) from exc
