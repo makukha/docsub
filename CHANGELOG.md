@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.7.1](https://github.com/makukha/docsub/releases/tag/v0.7.1) — 2025-01-14
+
+### Fixed
+
+- Duplicate newlines bug in `docsub x` cli command ([#54](https://github.com/makukha/docsub/issues/54))
+
+
 ## [v0.7.0](https://github.com/makukha/docsub/releases/tag/v0.7.0) — 2025-01-14
 
 ### Breaking 🔥
