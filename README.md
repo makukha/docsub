@@ -34,7 +34,7 @@
 * Configurable
 
 > [!NOTE]
-> This file uses [docsub]() itself. Dig into raw markup if interested.
+> This file uses docsub itself. Dig into raw markup if interested.
 
 ## Docsub is not a...
 
@@ -70,11 +70,11 @@ uv tool install docsub==0.6.0
 # Basic usage
 
 ```shell
-$ uv run docsub -i README.md
+$ uv run docsub apply -i README.md
 ```
 
 ```shell
-$ uvx docsub -i README.md
+$ uvx docsub apply -i README.md
 ```
 
 ## Get this
@@ -203,34 +203,6 @@ def func():
 </table>
 
 
-# CLI Reference
-
-<!-- docsub: begin -->
-<!-- docsub: help python -m docsub -->
-<!-- docsub: lines after 2 upto -1 -->
-<!-- docsub: strip -->
-```shell
-$ docsub --help
-Usage: docsub COMMAND [ARGS] [OPTIONS]
-
-Update Markdown files with embedded content.
-
-╭─ Arguments ──────────────────────────────────────────────╮
-│ *  FILE  Markdown files to be processed in order.        │
-│          [required]                                      │
-╰──────────────────────────────────────────────────────────╯
-╭─ Commands ───────────────────────────────────────────────╮
-│ --help -h  Display this message and exit.                │
-│ --version  Display application version.                  │
-╰──────────────────────────────────────────────────────────╯
-╭─ Parameters ─────────────────────────────────────────────╮
-│ IN-PLACE --in-place  -i  Process files in-place.         │
-│                          [default: False]                │
-╰──────────────────────────────────────────────────────────╯
-```
-<!-- docsub: end -->
-
-
 # Syntax reference
 
 ## Substitution block
@@ -349,7 +321,7 @@ where `{sys.executable}` is python interpreter used to invoke docsub. This has i
 ## Example
 
 ```shell
-$ docsub -i sample.md
+$ uv run docsub apply -i sample.md
 ```
 
 ### sample.md
@@ -383,6 +355,20 @@ if __name__ == '__main__':
     app()
 ```
 <!-- docsub: end #readme -->
+
+## Execute custom commands
+
+Docsub exposes `x` as CLI command, providing shortcut to execute commands from docsubfile.
+
+<!-- docsub: begin -->
+<!-- docsub: exec cd tests/test_readme_docsubfile && uv run docsub x say-hello Bob -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ uv run docsub x say-hello Bob
+Hi there, Bob!
+```
+<!-- docsub: end -->
 
 
 # Configuration
@@ -427,6 +413,70 @@ basedir = "."  # default
 Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disabled by default. To enable logging, set config option `log_level` to one of [logging levels](https://loguru.readthedocs.io/en/stable/api/logger.html#levels) supported by loguru.
 
 *(logging is rudimentary at the moment)*
+
+
+# CLI Reference
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m docsub -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ docsub --help
+Usage: docsub COMMAND
+
+╭─ Commands ───────────────────────────────────────────────╮
+│ apply      Update Markdown files with embedded content.  │
+│ x          Execute user-defined custom command from      │
+│            local docsubfile.py.                          │
+│ --help -h  Display this message and exit.                │
+│ --version  Display application version.                  │
+╰──────────────────────────────────────────────────────────╯
+```
+<!-- docsub: end -->
+
+## `docsub apply`
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m docsub apply -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ docsub apply --help
+Usage: docsub apply [ARGS] [OPTIONS]
+
+Update Markdown files with embedded content.
+
+╭─ Arguments ──────────────────────────────────────────────╮
+│ *  FILE  Markdown files to be processed in order.        │
+│          [required]                                      │
+╰──────────────────────────────────────────────────────────╯
+╭─ Parameters ─────────────────────────────────────────────╮
+│ IN-PLACE --in-place  -i  Process files in-place.         │
+│                          [default: False]                │
+╰──────────────────────────────────────────────────────────╯
+```
+<!-- docsub: end -->
+
+## `docsub x`
+
+<!-- docsub: begin -->
+<!-- docsub: help python -m docsub x -->
+<!-- docsub: lines after 2 upto -1 -->
+<!-- docsub: strip -->
+```shell
+$ docsub x --help
+Usage: docsub x [ARGS]
+
+Execute user-defined custom command from local
+docsubfile.py.
+
+╭─ Arguments ──────────────────────────────────────────────╮
+│ *  COMMAND  Custom command name. [required]              │
+│    PARAMS   Custom command parameters.                   │
+╰──────────────────────────────────────────────────────────╯
+```
+<!-- docsub: end -->
 
 
 # History

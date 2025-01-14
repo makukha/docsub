@@ -44,7 +44,7 @@ tasks:
   docs:
     desc: Update docs.
     cmds:
-      - uv run docsub -i README.md  # eating my own dog food
+      - uv run docsub apply -i README.md  # eating my own dog food
 
   #
   #  RELEASE
