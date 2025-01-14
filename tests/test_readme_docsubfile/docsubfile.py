@@ -4,8 +4,9 @@ app = App()
 
 
 @app.command
-def say_hello(username: str, /):  # positional-only parameters
-    print(f'Hi there, {username}!')
+def say_hello(*username: str):
+    for u in username:
+        print(f'Hi there, {u}!')
 
 
 if __name__ == '__main__':

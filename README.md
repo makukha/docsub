@@ -330,7 +330,8 @@ $ uv run docsub apply -i sample.md
 <!-- docsub: lines after 1 upto -1 -->
 ```markdown
 <!-- docsub: begin -->
-<!-- docsub: x say-hello Bob -->
+<!-- docsub: x say-hello Alice Bob -->
+Hi there, Alice!
 Hi there, Bob!
 <!-- docsub: end -->
 ```
@@ -347,8 +348,9 @@ app = App()
 
 
 @app.command
-def say_hello(username: str, /):  # positional-only parameters
-    print(f'Hi there, {username}!')
+def say_hello(*username: str):
+    for u in username:
+        print(f'Hi there, {u}!')
 
 
 if __name__ == '__main__':
@@ -361,11 +363,11 @@ if __name__ == '__main__':
 Docsub exposes `x` as CLI command, providing shortcut to execute commands from docsubfile.
 
 <!-- docsub: begin -->
-<!-- docsub: exec cd tests/test_readme_docsubfile && uv run docsub x say-hello Bob -->
+<!-- docsub: exec cd tests/test_readme_docsubfile && uv run docsub x say-hello Alice Bob -->
 <!-- docsub: lines after 2 upto -1 -->
-<!-- docsub: strip -->
 ```shell
-$ uv run docsub x say-hello Bob
+$ uv run docsub x say-hello Alice Bob
+Hi there, Alice!
 Hi there, Bob!
 ```
 <!-- docsub: end -->

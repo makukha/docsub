@@ -56,7 +56,7 @@ def x(
         loc=Location('<command line>'),
     )
     for line in producer.produce(None):
-        print(line.text)
+        print(line.text, end='')
 
 
 if __name__ == '__main__':
