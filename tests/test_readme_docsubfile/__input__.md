@@ -1,3 +1,3 @@
 <!-- docsub: begin -->
-<!-- docsub: x say-hello Bob -->
+<!-- docsub: x say-hello Alice Bob -->
 <!-- docsub: end -->
