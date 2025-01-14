@@ -10,17 +10,17 @@ from ..__base__ import DocsubError, Line, Location, Producer, Substitution
 
 
 DOCSUBFILE = Path('docsubfile.py').resolve()
-RX_CMD = re.compile(r'^\s*(?P<cmd>\S+)(\s+(?P<opts>.*))?$')
+RX_CMD = re.compile(r'^\s*(?P<cmd>\S+)(\s+(?P<params>.*))?$')
 
 
 class DocsubfileNotFound(DocsubError, FileNotFoundError): ...
 
 
 class XCommand(Producer, name='x'):
-    def __init__(self, cmd: str, opts: str | None, *, loc: Location) -> None:
+    def __init__(self, cmd: str, params: str | None, *, loc: Location) -> None:
         super().__init__(loc)
         self.cmd = cmd
-        self.opts = opts.strip() if opts else None
+        self.params = params.strip() if params else None
 
     @override
     @classmethod
@@ -31,14 +31,14 @@ class XCommand(Producer, name='x'):
             )
         if (match := RX_CMD.match(args)) is None:
             raise cls.error_invalid_args(args, loc=loc)
-        return cls(cmd=match.group('cmd'), opts=match.group('opts'), loc=loc)
+        return cls(cmd=match.group('cmd'), params=match.group('params'), loc=loc)
 
     @override
-    def produce(self, ctx: Substitution) -> Iterable[Line]:
+    def produce(self, ctx: Substitution | None) -> Iterable[Line]:
         python = sys.executable
         cmd = [python, str(DOCSUBFILE), self.cmd]
-        if self.opts:
-            cmd.extend(shlex.split(self.opts))
+        if self.params:
+            cmd.extend(shlex.split(self.params))
         try:
             result = check_output(args=cmd, text=True)
         except Exception as exc:
