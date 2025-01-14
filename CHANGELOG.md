@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.7.0](https://github.com/makukha/docsub/releases/tag/v0.7.0) — 2025-01-14
+
+### Breaking 🔥
+
+- Changed the way `docsub` is invoked: `docsub apply` instead of invocation without commands ([#50](https://github.com/makukha/docsub/issues/50))
+
+### Added 🌿
+
+- New command line command `docsub x` ([#50](https://github.com/makukha/docsub/issues/50))
+
+
 ## [v0.6.0](https://github.com/makukha/docsub/releases/tag/v0.6.0) — 2025-01-13
 
 ### Added 🌿
