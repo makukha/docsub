@@ -3,7 +3,7 @@
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
 [![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/tox-multipython)
-[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.6.0)](https://pypi.python.org/pypi/docsub)
+[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.7.0)](https://pypi.python.org/pypi/docsub)
 [![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)
 ](https://github.com/makukha/docsub)
 
@@ -11,7 +11,7 @@
 > * With `docsub`, every documentation file may become executable.
 > * Never use `docsub` to process files from untrusted sources.
 > * This project is in research stage, syntax and functionality may change significantly.
-> * If still want to try it, use pinned package version `docsub==0.6.0`
+> * If still want to try it, use pinned package version `docsub==0.7.0`
 
 
 # Use cases
@@ -55,7 +55,7 @@ The most flexible recommended option, see [Custom commands](#custom-commands)
 ...
 [dependency-groups]
 dev = [
-  "docsub==0.6.0",
+  "docsub==0.7.0",
 ]
 ```
 
@@ -64,7 +64,7 @@ dev = [
 Works for simple cases.
 
 ```shell
-uv tool install docsub==0.6.0
+uv tool install docsub==0.7.0
 ```
 
 # Basic usage
