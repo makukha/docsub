@@ -15,8 +15,8 @@ class IncludeConfig(Config):
 RX_PATH = re.compile(r'^\s*(?P<path>\S.*)$')
 
 
-class IncludeCommand(Producer, name='include', conftype=IncludeConfig):
-    def __init__(self, path: str, conf: IncludeConfig, loc: Location) -> None:
+class IncludeCommand(Producer, name='include', conf_class=IncludeConfig):
+    def __init__(self, path: str, *, conf: IncludeConfig, loc: Location) -> None:
         super().__init__(loc)
         self.conf = conf
         p = Path(path.strip())

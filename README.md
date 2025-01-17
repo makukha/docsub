@@ -320,6 +320,10 @@ x <project-command> [args and --options]
 ```
 Execute [project-local](#project-local-commands) command declared in `docsubfile.py` in project root. The naming is inspired by `X-` HTTP headers and `x-` convention for reusable YAML sections.
 
+Config options:
+
+* `docsubfile` — path to file with project commands, absolute or relative to project root (default: `docsubfile.py`)
+
 
 # Project-local commands
 
@@ -363,7 +367,7 @@ Hi there, Bob!
 Docsub exposes `x` as CLI command, letting project commands to be executed with project settings:
 
 <!-- docsub: begin -->
-<!-- docsub: exec cd tests/test_readme_docsubfile && uv run docsub x say-hello Alice Bob -->
+<!-- docsub: exec uv run docsub --command.x.docsubfile=tests/test_readme_docsubfile/docsubfile.py x say-hello Alice Bob -->
 <!-- docsub: lines after 2 upto -1 -->
 ```shell
 $ uv run docsub x say-hello Alice Bob
@@ -385,7 +389,7 @@ Configuration resolution order
 
 ## Root settings
 
-* `project_commands_file` — path to `docsubfile.py` file with project commands, relative to config file (default: `docsubfile.py`)
+* `local_dir` — internal working directory at the project root (default: `.docsub`)
 
 ## Command settings
 
@@ -399,26 +403,29 @@ See [Commands](#commands).
 
 *(to be documented)*
 
-## Example
+## Complete config example
 
 All config keys are optional.
 
 
 ```toml
-project_commands_file = "docsubfile.py"  # default
+local_dir = ".docsub"  # default
+
+[logging]
+#level = "DEBUG"  # default: missing, logging disabled
 
 [command.exec]
 env_vars = {}  # default
 work_dir = "."  # default
 
-[command.help]
-env_vars = { COLUMNS = "60" }
+[command.help.env_vars]
+COLUMNS = "60"  # more compact
 
 [command.include]
 base_dir = "."  # default
 
-[logging]
-# level = "DEBUG"  # default: missing, logging disabled
+[command.x]
+docsubfile = "docsubfile.py"  # default
 ```
 
 > [!WARNING]

@@ -7,6 +7,8 @@ from typing import Any, ClassVar, Self
 
 from pydantic import BaseModel as Config
 
+from .environment import Environment
+
 
 # syntax
 
@@ -119,7 +121,7 @@ class Command(ABC):
     """
 
     name: ClassVar[str]
-    conftype: ClassVar[type[Config] | None]
+    conf_class: ClassVar[type[Config] | None]
 
     loc: Location
 
@@ -162,12 +164,12 @@ class Producer(Command, ABC):
         cls,
         *,
         name: str,
-        conftype: type[Config] | None = None,
+        conf_class: type[Config] | None = None,
         **kwargs,
     ):
         super().__init_subclass__(**kwargs)
         cls.name = name
-        cls.conftype = conftype
+        cls.conf_class = conf_class
 
     @abstractmethod
     def produce(self, ctx: Substitution) -> Iterable[Line]:
@@ -183,12 +185,12 @@ class Modifier(Command, ABC):
         cls,
         *,
         name: str,
-        conftype: type[Config] | None = None,
+        conf_class: type[Config] | None = None,
         **kwargs,
     ):
         super().__init_subclass__(**kwargs)
         cls.name = name
-        cls.conftype = conftype
+        cls.conf_class = conf_class
 
     def on_content_line(self, line: Line, ctx: Substitution) -> None:
         pass

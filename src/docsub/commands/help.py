@@ -9,20 +9,22 @@ from typing import Annotated, Self, override
 from pydantic import Field
 
 from ..__base__ import Config, Line, Location, Producer, Substitution
+from ..environment import Environment
 
 
 class HelpConfig(Config):
-    env: Annotated[dict[str, str], Field(default_factory=dict)]
+    env_vars: Annotated[dict[str, str], Field(default_factory=dict)]
 
 
 CMD = r'[-._a-zA-Z0-9]+'
 RX_CMD = re.compile(rf'^\s*(?P<python>python\s+-m\s+)?(?P<cmd>{CMD}(\s+{CMD})*)\s*$')
 
 
-class HelpCommand(Producer, name='help', conftype=HelpConfig):
+class HelpCommand(Producer, name='help', conf_class=HelpConfig):
     def __init__(
         self,
         cmd: str,
+        *,
         use_python: bool,
         conf: HelpConfig,
         loc: Location,
@@ -51,7 +53,7 @@ class HelpCommand(Producer, name='help', conftype=HelpConfig):
         try:
             result = check_output(
                 args=shlex.split(cmd),
-                env=dict(os.environ) | self.conf.env,
+                env=dict(os.environ) | self.conf.env_vars,
                 text=True,
             )
         except Exception as exc:

@@ -8,17 +8,18 @@ from typing import Annotated, Self, override
 from pydantic import Field
 
 from ..__base__ import Config, Line, Location, Producer, Substitution
+from ..environment import Environment
 
 
 class ExecConfig(Config):
     work_dir: Annotated[Path, Field(default_factory=Path)]
-    env: Annotated[dict[str, str], Field(default_factory=dict)]
+    env_vars: Annotated[dict[str, str], Field(default_factory=dict)]
 
 
 RX_CMD = re.compile(r'^\s*(?P<cmd>\S.*)$')
 
 
-class ExecCommand(Producer, name='exec', conftype=ExecConfig):
+class ExecCommand(Producer, name='exec', conf_class=ExecConfig):
     def __init__(self, cmd: str, *, conf: ExecConfig, loc: Location) -> None:
         super().__init__(loc)
         self.conf = conf
@@ -37,7 +38,7 @@ class ExecCommand(Producer, name='exec', conftype=ExecConfig):
         try:
             result = check_output(
                 args=['sh', '-c', self.cmd],
-                env=dict(os.environ) | self.conf.env,
+                env=dict(os.environ) | self.conf.env_vars,
                 text=True,
                 cwd=self.conf.work_dir,
             )
