@@ -1,8 +1,8 @@
 # docsub
-> Embed text and data into Markdown files
+> Substitute dynamically generated content in Markdown files
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
-[![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/tox-multipython)
+[![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/docsub)
 [![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.7.1)](https://pypi.python.org/pypi/docsub)
 [![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)
 ](https://github.com/makukha/docsub)
@@ -10,113 +10,47 @@
 > [!WARNING]
 > * With `docsub`, every documentation file may become executable.
 > * Never use `docsub` to process files from untrusted sources.
-> * This project is in research stage, syntax and functionality may change significantly.
+> * This project is in experimental state, syntax and functionality may change significantly.
 > * If still want to try it, use pinned package version `docsub==0.7.1`
-
-
-# Use cases
-
-* Manage docs for multiple targets without duplication: GitHub, PyPI, Docker Hub, ...
-* Embed dynamically generated tabular data:
-  * Models evaluation results
-  * Dependencies summary
-  * Test reports
-* CLI user reference
 
 
 # Features
 
-* Insert static files and dynamic results
-* Plays nicely with other markups
-* Invisible markup inside comment blocks
-* Idempotent substitutions
-* Custom user-defined commands
-* Configurable
+* Embed **static** files
+* Embed **command execution** results
+* **Idempotent** substitutions
+* **Invisible** non-intrusive markup using comment blocks
+* **Plays nicely** with other markups
+* **Extensible** with project-local commands
+* **Configurable** with config files and env vars
+
+
+# Use cases
+
+* Manage partially duplicate docs for multiple destinations
+* Embed CLI reference in docs
+* Embed dynamically generated content:
+  * Models evaluation results
+  * Project metadata
+  * Test reports
 
 > [!NOTE]
 > This file uses docsub itself. Dig into raw markup if interested.
 
-## Docsub is not a...
+## Docsub is not...
 
-* documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org)
-* templating engine like [Jinja](https://jinja.palletsprojects.com)
-* replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
-* full-featured static website generator like [Pelican](https://getpelican.com)
+* ...a documentation engine like [Sphinx](https://www.sphinx-doc.org) or [MkDocs](https://www.mkdocs.org)
+* ...a full-featured static website generator like [Pelican](https://getpelican.com)
+* ...a templating engine like [Jinja](https://jinja.palletsprojects.com)
+* ...a replacement for [Bump My Version](https://callowayproject.github.io/bump-my-version)
 
-
-# Installation
-
-## Development dependency
-
-The most flexible recommended option, see [Custom commands](#custom-commands)
-
-```toml
-# pyproject.toml
-...
-[dependency-groups]
-dev = [
-  "docsub==0.7.1",
-]
-```
-
-## Global installation
-
-Works for simple cases.
-
-```shell
-uv tool install docsub==0.7.1
-```
-
-# Basic usage
+# Usage
 
 ```shell
 $ uv run docsub apply -i README.md
 ```
 
-```shell
-$ uvx docsub apply -i README.md
-```
-
-## Get this
-
-<!-- docsub: begin #readme -->
-<!-- docsub: include tests/test_readme_showcase/__result__.md -->
-<!-- docsub: lines after 1 upto -1 -->
-````markdown
-# Title
-<!-- docsub: begin -->
-<!-- docsub: include info.md -->
-<!-- docsub: include features.md -->
-> Long description.
-* Feature 1
-* Feature 2
-* Feature 3
-<!-- docsub: end -->
-
-## Table
-<!-- docsub: begin -->
-<!-- docsub: include data.md -->
-<!-- docsub: lines after 2 -->
-| Col 1 | Col 2 |
-|-------|-------|
-| Key 1 | value 1 |
-| Key 2 | value 2 |
-| Key 3 | value 3 |
-<!-- docsub: end -->
-
-## Code
-<!-- docsub: begin #code -->
-<!-- docsub: include func.py -->
-<!-- docsub: lines after 1 upto -1 -->
-```python
-def func():
-    pass
-```
-<!-- docsub: end #code -->
-````
-<!-- docsub: end #readme -->
-
-## From these
+## From separate files...
 
 <table>
 <tr>
@@ -203,9 +137,92 @@ def func():
 </table>
 
 
-# Syntax reference
+## Get merged document
 
-## Substitution block
+***and keep it updated!***
+
+<!-- docsub: begin #readme -->
+<!-- docsub: include tests/test_readme_showcase/__result__.md -->
+<!-- docsub: lines after 1 upto -1 -->
+````markdown
+# Title
+<!-- docsub: begin -->
+<!-- docsub: include info.md -->
+<!-- docsub: include features.md -->
+> Long description.
+* Feature 1
+* Feature 2
+* Feature 3
+<!-- docsub: end -->
+
+## Table
+<!-- docsub: begin -->
+<!-- docsub: include data.md -->
+<!-- docsub: lines after 2 -->
+| Col 1 | Col 2 |
+|-------|-------|
+| Key 1 | value 1 |
+| Key 2 | value 2 |
+| Key 3 | value 3 |
+<!-- docsub: end -->
+
+## Code
+<!-- docsub: begin #code -->
+<!-- docsub: include func.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+def func():
+    pass
+```
+<!-- docsub: end #code -->
+````
+<!-- docsub: end #readme -->
+
+
+# Installation
+
+## Development dependency
+
+Recommended. The most flexible installation option, allowing [project-local commands](#project-local-commands) to utilize project codebase.
+
+```toml
+# pyproject.toml
+[dependency-groups]
+dev = [
+  "docsub==0.7.1",
+]
+```
+
+## Global installation
+
+Works for simple cases.
+
+```shell
+uv tool install docsub==0.7.1
+```
+
+
+# Syntax
+
+The syntax is purposefully verbose. This is fine, you are not supposed to edit it often. But it's searchable and sticks in eye when scrolling down large documents.
+
+Docsub uses line-based substitution syntax based on *directives* and *substitution blocks*.
+
+## Markdown
+
+### Directive
+
+*Markdown directive* is one-line comment:
+
+```text
+<!-- docsub: <directive> [directive args] -->
+```
+
+There are multiple [directive types](#directives).
+
+### Substitution block
+
+*Markdown substitution block* is a sequence of lines, starting with `begin` directive and ending with `end` directive.
 
 ```markdown
 <!-- docsub: begin -->
@@ -217,11 +234,11 @@ This text will be replaced too.
 <!-- docsub: end -->
 ```
 
-Each block starts with `begin` and ends with `end`. One or many commands come at the top of the block, otherwise they are treated as plain text. Blocks without *producing commands* are not allowed. Block's inner text will be replaced upon substitution, unless modifier command `lines` is used.
+One or many other directives must come at the top of the block, otherwise they are treated as plain text. Blocks without *producing directives* are not allowed. Block's inner text will be replaced upon substitution, unless modifier directives are used, e.g. `lines`.
 
-If docsub substitution block leis inside markdown fenced Code block, it is not substituted (examples: fenced code blocks right above and below). To put dynamic content int fenced code block, place `begin` and `end` around it and use `lines after 1 upto -1` (example: Basic usage section).
+If docsub substitution block lies inside markdown fenced code block, it is not substituted *(example: fenced code blocks above and below this paragraph, see the raw markup)*. To put dynamic content into a fenced code block, place `begin` and `end` around it and use `lines after N upto -M` *(example: [Usage](#usage) section)*.
 
-For nested blocks, only top level substitution is performed. Use block `#identifier` to distinguish nesting levels.
+For nested blocks, only top level substitution is performed. Use block `#identifier` to distinguish between nesting levels.
 
 ```markdown
 <!-- docsub: begin #top -->
@@ -232,91 +249,87 @@ For nested blocks, only top level substitution is performed. Use block `#identif
 <!-- docsub: end #top -->
 ```
 
-## Commands
+# Directives
 
-* Block delimiters: `begin`, `end`
+* *Block delimiters*: `begin`, `end`
 * *Producing commands*: `exec`, `help`, `include`, `x`
 * *Modifying commands*: `lines`, `strip`
 
-### `begin`
+## `begin`
 ```text
 begin [#identifier]
 ```
-Open substitution target block. To distinguish with nested blocks, use `#identifier` starting with `#`.
+Open substitution target block. To distinguish between nesting levels, use block `#identifier`, starting with `#`.
 
-### `end`
+## `end`
 ```text
 end [#identifier]
 ```
 Close substitution target block.
 
-### `exec`
+## `exec`
 ```text
-exec arbitrary commands
+exec <arbitrary commands>
 ```
-Execute `arbitrary commands` with `sh -c` and substitute stdout. Allows pipes and other shell functionality. If possible, avoid using this command.
+Execute `<arbitrary commands>` with `sh -c` and substitute stdout. Allows pipes and other shell functionality. If possible, avoid using this command.
 
 Config options:
 
-* `workdir` — shell working directory, default `'.'`
-* `env` — additional environment variables dict, default `{}`
+* `work_dir` — shell working directory, default `'.'`
+* `env_vars` — dict of additional environment variables, default `{}`
 
-### `help`
+## `help`
 
 ```text
-help command [subcommand...]
-help python -m command [subcommand...]
+help <command> [subcommand...]
+help python -m <command> [subcommand...]
 ```
-Display help for CLI utility or Python module. Use this command to document CLI instead of `exec`. Runs `command args --help` or `python -m command args --help` respectively. `command [subcommands...]` can only be a space-separated sequence of `[-._a-zA-Z0-9]` characters.
+Display help for CLI utility or Python module. Use this command to document CLI instead of `exec`. Runs `<command> [subcommand...] --help` or `python -m <command> [subcommand...] --help` respectively. *Directive args* must be a space-separated sequence of characters `[-._a-zA-Z0-9]`.
 
 Config options:
 
-* `env` — additional environment variables dict, default `{}`
+* `env_vars` — dict of additional environment variables, default `{}`
 
-### `include`
+## `include`
 ```text
 include path/to/file
 ```
-Literally include file specified by path relative to `workdir` config option.
+Literally include file specified by path relative to `base_dir` config option.
 
 Config options:
 
-* `basedir` — base directory for relative paths
+* `base_dir` — base directory for relative paths
 
-### `lines`
+## `lines`
 ```text
 lines [after N] [upto -M]
 ```
 Upon substitution, keep original target block lines: first `N` and/or last `M`. Only one `lines` command is allowed inside the block.
 
-### `strip`
+## `strip`
 ```text
 strip
 ```
-Strip trailing whitespaces on every line of substitution result; strip initial and trailing blank lines of substitution result.
+Strip whitespace in substitution result:
+* initial and trailing blank lines
+* trailing whitespace on every line
 
-### `x`
+## `x`
 ```text
-x <custom-command> [options and args]
+x <project-command> [args and --options]
 ```
-Execute custom command declared in `docsubfile.py` in project root, see [Custom commands](#custom-commands) for details and examples. The naming is inspired by `X-` HTTP headers and `x-` YAML sections in e.g. Docker Compose.
+Execute [project-local](#project-local-commands) command declared in `docsubfile.py` in project root. The naming is inspired by `X-` HTTP headers and `x-` convention for reusable YAML sections.
 
 
-# Custom commands
+# Project-local commands
 
-When project root contains file `docsubfile.py` with commands defined as in example below, they can be used as `docsub: x ...` commands. User commands can be defined as [cyclopts](https://cyclopts.readthedocs.io), or [click](https://click.palletsprojects.com), or whatever commands. If using `cyclopts`, there is no need to install it separately, docsub uses it internally and it is always available to its Python interpreter.
+When project root contains file `docsubfile.py` with commands defined as in example below, they can be used in `docsub: x ` directive. Project commands must be defined as [click](https://click.palletsprojects.com) command and gathered under `x` group. There is no need to install `click` separately as docsub depends on it.
 
-`<!-- docsub: x <custom-command> [options and args] -->`
+If docsub is installed globally and called as `uvx docsub`, project commands in `docsubfile.py` have access to docsub dependencies only: `click`, `loguru`, `rich` (see docsub's pyproject.toml for details).
 
-The `x` command can be regarded as a shortcut to
+If docsub is installed as project dev dependency and called as `uv run docsub`, user commands also have access to project modules and dev dependencies. This allows more flexible scenarios.
 
-`{sys.executable} docsubfile.py <custom-command> [options and args]`,
-
-where `{sys.executable}` is python interpreter used to invoke docsub. This has important consequences:
-
-- If docsub is installed globally and called as e.g. `uvx docsub`, user commands in `docsubfile.py` are allowed to use `cyclopts` and `loguru`, which are installed by docsub itself.
-
-- If docsub is installed as project dev dependency and called as e.g. `uv run docsub`, user commands also have access to project modules and dev dependencies. This allows more flexible scenarios.
+Project command author can get access to docsub `Environment` object (including command configs) from click context object (see example below). The docsub `Environment` object has some useful methods *(not documented yet)*.
 
 ## Example
 
@@ -338,29 +351,16 @@ Hi there, Bob!
 <!-- docsub: end #readme -->
 
 ### docsubfile.py
-<!-- docsub: begin #readme -->
+<!-- docsub: begin -->
 <!-- docsub: include tests/test_readme_docsubfile/docsubfile.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
-from cyclopts import App
-
-app = App()
-
-
-@app.command
-def say_hello(*username: str):
-    for u in username:
-        print(f'Hi there, {u}!')
-
-
-if __name__ == '__main__':
-    app()
 ```
-<!-- docsub: end #readme -->
+<!-- docsub: end -->
 
-## Execute custom commands
+## Calling project-local commands
 
-Docsub exposes `x` as CLI command, providing shortcut to execute commands from docsubfile.
+Docsub exposes `x` as CLI command, letting project commands to be executed with project settings:
 
 <!-- docsub: begin -->
 <!-- docsub: exec cd tests/test_readme_docsubfile && uv run docsub x say-hello Alice Bob -->
@@ -377,12 +377,25 @@ Hi there, Bob!
 
 Configuration resolution order
 
+* command line options *(to be documented)*
 * environment variables *(to be documented)*
-* `.docsub.toml` config file in current working directory
+* `docsub.toml` config file in current working directory
 * `pyproject.toml`, section `[tool.docsub]` *(to be implemented)*
 * default config values
 
+## Root settings
+
+* `project_commands_file` — path to `docsubfile.py` file with project commands, relative to config file (default: `docsubfile.py`)
+
+## Command settings
+
+See [Commands](#commands).
+
 ## Environment variables
+
+*(to be documented)*
+
+## Command line options
 
 *(to be documented)*
 
@@ -392,27 +405,29 @@ All config keys are optional.
 
 
 ```toml
+project_commands_file = "docsubfile.py"  # default
+
 [command.exec]
-env = {}  # default
-workdir = "."  # default
+env_vars = {}  # default
+work_dir = "."  # default
 
 [command.help]
-env = { COLUMNS = "60" }
+env_vars = { COLUMNS = "60" }
 
 [command.include]
-basedir = "."  # default
+base_dir = "."  # default
 
 [logging]
-# level = "DEBUG"  # default: missing value
+# level = "DEBUG"  # default: missing, logging disabled
 ```
 
 > [!WARNING]
-> In future releases config keys will be moved under `[tool.docsub]` root, this will be a breaking change.
+> In future releases config keys will be moved under `[tool.docsub]` root for both `pyproject.toml` and `docsub.toml`, this will be a breaking change.
 
 
 # Logging
 
-Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disabled by default. To enable logging, set config option `log_level` to one of [logging levels](https://loguru.readthedocs.io/en/stable/api/logger.html#levels) supported by loguru.
+Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disabled by default. To enable logging, set config option `level` to one of [logging levels](https://loguru.readthedocs.io/en/stable/api/logger.html#levels) supported by loguru.
 
 *(logging is rudimentary at the moment)*
 
@@ -498,4 +513,4 @@ This project appeared to maintain docs for [multipython](https://github.com/maku
 
 # Changelog
 
-Check repository [CHANGELOG.md](https://github.com/makukha/multipython/tree/main/CHANGELOG.md)
+[CHANGELOG.md](https://github.com/makukha/multipython/tree/main/CHANGELOG.md)
