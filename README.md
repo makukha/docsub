@@ -269,14 +269,12 @@ Close substitution target block.
 
 ## `exec`
 ```text
-exec <arbitrary commands>
+exec <shell commands>
 ```
-Execute `<arbitrary commands>` with `sh -c` and substitute stdout. Allows pipes and other shell functionality. If possible, avoid using this command.
+Execute `<shell commands>` with `sh -c` and substitute stdout. Allows pipes and other shell functionality. If possible, avoid using this directive.
 
-Config options:
-
-* `work_dir` — shell working directory, default `'.'`
-* `env_vars` — dict of additional environment variables, default `{}`
+* `cmd.exec.work_dir` — shell working directory, default `'.'`
+* `cmd.exec.env_vars` — dict of additional environment variables, default `{}`
 
 ## `help`
 
@@ -284,11 +282,9 @@ Config options:
 help <command> [subcommand...]
 help python -m <command> [subcommand...]
 ```
-Display help for CLI utility or Python module. Use this command to document CLI instead of `exec`. Runs `<command> [subcommand...] --help` or `python -m <command> [subcommand...] --help` respectively. *Directive args* must be a space-separated sequence of characters `[-._a-zA-Z0-9]`.
+Display help for CLI utility or Python module. Use this command to document CLI instead of `exec`. Runs `command [subcommand...] --help` or `python -m command [subcommand...] --help` respectively. *Directive args* must be a space-separated sequence of characters `[-._a-zA-Z0-9]`.
 
-Config options:
-
-* `env_vars` — dict of additional environment variables, default `{}`
+* `cmd.help.env_vars` — dict of additional environment variables, default `{}`
 
 ## `include`
 ```text
@@ -296,9 +292,7 @@ include path/to/file
 ```
 Literally include file specified by path relative to `base_dir` config option.
 
-Config options:
-
-* `base_dir` — base directory for relative paths
+* `cmd.include.base_dir` — base directory for relative paths
 
 ## `lines`
 ```text
@@ -320,9 +314,7 @@ x <project-command> [args and --options]
 ```
 Execute [project-local](#project-local-commands) command declared in `docsubfile.py` in project root. The naming is inspired by `X-` HTTP headers and `x-` convention for reusable YAML sections.
 
-Config options:
-
-* `docsubfile` — path to file with project commands, absolute or relative to project root (default: `docsubfile.py`)
+* `cmd.x.docsubfile` — path to file with project-local commands, absolute or relative to project root (default: `docsubfile.py`)
 
 
 # Project-local commands
@@ -367,7 +359,7 @@ Hi there, Bob!
 Docsub exposes `x` as CLI command, letting project commands to be executed with project settings:
 
 <!-- docsub: begin -->
-<!-- docsub: exec uv run docsub --command.x.docsubfile=tests/test_readme_docsubfile/docsubfile.py x say-hello Alice Bob -->
+<!-- docsub: exec uv run docsub -x tests/test_readme_docsubfile/docsubfile.py x say-hello Alice Bob -->
 <!-- docsub: lines after 2 upto -1 -->
 ```shell
 $ uv run docsub x say-hello Alice Bob
@@ -414,17 +406,17 @@ local_dir = ".docsub"  # default
 [logging]
 #level = "DEBUG"  # default: missing, logging disabled
 
-[command.exec]
+[cmd.exec]
 env_vars = {}  # default
 work_dir = "."  # default
 
-[command.help.env_vars]
+[cmd.help.env_vars]
 COLUMNS = "60"  # more compact
 
-[command.include]
+[cmd.include]
 base_dir = "."  # default
 
-[command.x]
+[cmd.x]
 docsubfile = "docsubfile.py"  # default
 ```
 

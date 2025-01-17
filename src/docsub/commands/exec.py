@@ -8,7 +8,6 @@ from typing import Annotated, Self, override
 from pydantic import Field
 
 from ..__base__ import Config, Line, Location, Producer, Substitution
-from ..environment import Environment
 
 
 class ExecConfig(Config):

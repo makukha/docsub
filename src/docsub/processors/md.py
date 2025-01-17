@@ -63,7 +63,7 @@ class BlockSubstitution(Substitution):
         # command?
         if m := RX_CMD.match(line.text):
             name = m.group('name')
-            conf = getattr(self.conf.command, name, None)
+            conf = getattr(self.conf.cmd, name, None)
             cmd = COMMANDS[name].parse_args(
                 args=m.group('args') or '',
                 conf=conf,

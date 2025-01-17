@@ -7,8 +7,6 @@ from typing import Any, ClassVar, Self
 
 from pydantic import BaseModel as Config
 
-from .environment import Environment
-
 
 # syntax
 

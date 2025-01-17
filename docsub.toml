@@ -1,4 +1,4 @@
-[command.help]
+[cmd.help]
 env_vars = { COLUMNS = "60" }
 
 [logging]

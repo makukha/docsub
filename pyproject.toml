@@ -45,9 +45,10 @@ scripts = {docsub = "docsub.__main__:app"}
 
 requires-python = ">=3.9"
 dependencies = [
-  "cyclopts~=3.1",
+  "importloc",
   "loguru~=0.7",
   "pydantic-settings~=2.7",
+  "rich-click~=1.8.5",
 ]
 
 [dependency-groups]
@@ -95,7 +96,7 @@ docstring-code-line-length = "dynamic"
 # towncrier
 
 [tool.towncrier]
-directory = "news.d"
+directory = "NEWS.d"
 filename = "CHANGELOG.md"
 title_format = "## [v{version}](https://github.com/makukha/docsub/releases/tag/v{version}) — {project_date}"
 issue_format = "[#{issue}](https://github.com/makukha/docsub/issues/{issue})"

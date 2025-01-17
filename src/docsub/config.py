@@ -10,7 +10,7 @@ from pydantic_settings import (
     TomlConfigSettingsSource,
 )
 
-from .commands import CommandsConfig
+from .commands import CmdConfig
 from .logging import LoggingConfig, configure_logging
 
 
@@ -21,11 +21,10 @@ DEFAULT_DOCSUB_DIR = '.docsub'
 class DocsubSettings(BaseSettings):
     local_dir: Path = Path(DEFAULT_DOCSUB_DIR)
 
-    command: Annotated[CommandsConfig, Field(default_factory=CommandsConfig)]
+    cmd: Annotated[CmdConfig, Field(default_factory=CmdConfig)]
     logging: Annotated[LoggingConfig, Field(default_factory=LoggingConfig)]
 
     model_config = SettingsConfigDict(
-        cli_parse_args=True,
         env_prefix='DOCSUB_',
         nested_model_default_partial_update=True,
     )
@@ -45,7 +44,7 @@ class DocsubSettings(BaseSettings):
         )
 
 
-def load_config(config_file: Path, **kwargs) -> DocsubSettings:
+def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
     """Load config from file.
     """
     conf = DocsubSettings(_toml_file=config_file, **kwargs)

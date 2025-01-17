@@ -1,62 +1,74 @@
+import importlib
+import json
 from pathlib import Path
 import shlex
 from typing import Annotated
 
-from cyclopts import App, Parameter
-from cyclopts.types import ExistingFile
+import rich_click as click
 
 from . import __version__
 from .__base__ import Location
-from .commands import XCommand
-from .config import load_config
+# from .commands import XCommand
+from .environment import Environment
 from .process import process_paths
 
 
-app = App(name='docsub', version=__version__)
+@click.group()
+@click.version_option(__version__, prog_name='docsub')
+@click.option('-c', '--config-file', type=Path)
+@click.option('-l', '--local-dir', type=Path)
+@click.option( '--exec-work-dir', type=Path)
+@click.option( '--exec-env-vars', type=str)
+@click.option( '--help-env-vars', type=str)
+@click.option( '--include-base-dir', type=Path)
+@click.option( '-x', '--x-docsubfile', type=Path)
+@click.pass_context
+def app(
+    ctx: click.Context,
+    config_file: Path | None = None,
+    # root settings
+    local_dir: Path | None = None,
+    # commands settings
+    exec_work_dir: Path | None = None,
+    exec_env_vars: str | None = None,
+    help_env_vars: str | None = None,
+    include_base_dir: Path | None = None,
+    x_docsubfile: Path | None = None,
+
+):
+    def maybe_json_loads(value: str | None) -> dict | None:
+        if value is not None:
+            return json.loads(value)
+
+    ctx.obj = Environment.from_config_file(
+        config_file=config_file,
+        options={
+            'local_dir': local_dir,
+            'cmd.exec.work_dir': exec_work_dir,
+            'cmd.exec.env_vars': maybe_json_loads(exec_env_vars),
+            'cmd.help.env_vars': maybe_json_loads(help_env_vars),
+            'cmd.include.base_dir': include_base_dir,
+            'cmd.x.docsubfile': x_docsubfile,
+        },
+    )
 
 
-@app.command
+@app.command()
+@click.argument('files', type=Path, nargs=-1, required=True)
+@click.option('-i', '--in-place', is_flag=True, help='Process files in-place')
+@click.pass_context
 def apply(
-    file: Annotated[list[ExistingFile], Parameter(negative=())],
-    /,
-    in_place: Annotated[bool, Parameter(('--in-place', '-i'), negative=())] = False,
+    ctx: click.Context,
+    files: tuple[Path, ...],
+    in_place: bool = False,
 ):
     """
     Update Markdown files with embedded content.
 
-    Parameters
-    ----------
-    file
-        Markdown files to be processed in order.
-    in_place
-        Process files in-place.
+    Read FILES and perform substitutions one by one. If one file depends on another,
+    place it after that file.
     """
-    process_paths((Path(p) for p in file), in_place=in_place, conf=load_config())
-
-
-@app.command
-def x(
-    command: Annotated[str, Parameter(negative=())],
-    /,
-    *params,
-):
-    """
-    Execute user-defined custom command from local docsubfile.py.
-
-    Parameters
-    ----------
-    command
-        Custom command name.
-    params
-        Custom command parameters.
-    """
-    producer = XCommand(
-        cmd=command,
-        params=shlex.join(params),
-        loc=Location('<command line>'),
-    )
-    for line in producer.produce(None):
-        print(line.text, end='')
+    process_paths(files, in_place=in_place, env=ctx.obj)
 
 
 if __name__ == '__main__':
