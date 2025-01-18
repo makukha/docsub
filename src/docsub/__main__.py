@@ -12,11 +12,11 @@ from .process import process_paths
 @click.group()
 @click.option('-c', '--config-file', type=Path)
 @click.option('-l', '--local-dir', type=Path)
-@click.option( '--cmd-exec-work-dir', type=Path)
-@click.option( '--cmd-exec-env-vars', type=str)
-@click.option( '--cmd-help-env-vars', type=str)
-@click.option( '--cmd-include-base-dir', type=Path)
-@click.option( '-x', '--cmd-x-docsubfile', type=Path)
+@click.option('--cmd-exec-work-dir', type=Path)
+@click.option('--cmd-exec-env-vars', type=str)
+@click.option('--cmd-help-env-vars', type=str)
+@click.option('--cmd-include-base-dir', type=Path)
+@click.option('-x', '--cmd-x-docsubfile', type=Path)
 @click.version_option(__version__, prog_name='docsub')
 @click.pass_context
 def cli(
@@ -30,7 +30,6 @@ def cli(
     cmd_help_env_vars: str | None = None,
     cmd_include_base_dir: Path | None = None,
     cmd_x_docsubfile: Path | None = None,
-
 ):
     def maybe_json_loads(value: str | None) -> dict | None:
         if value is not None:

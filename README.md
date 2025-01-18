@@ -3,7 +3,7 @@
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
 [![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/docsub)
-[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.7.1)](https://pypi.python.org/pypi/docsub)
+[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.8.0)](https://pypi.python.org/pypi/docsub)
 [![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)
 ](https://github.com/makukha/docsub)
 
@@ -11,7 +11,7 @@
 > * With `docsub`, every documentation file may become executable.
 > * Never use `docsub` to process files from untrusted sources.
 > * This project is in experimental state, syntax and functionality may change significantly.
-> * If still want to try it, use pinned package version `docsub==0.7.1`
+> * If still want to try it, use pinned package version `docsub==0.8.0`
 
 
 # Features
@@ -189,7 +189,7 @@ Recommended. The most flexible installation option, allowing [project-local comm
 # pyproject.toml
 [dependency-groups]
 dev = [
-  "docsub==0.7.1",
+  "docsub==0.8.0",
 ]
 ```
 
@@ -198,7 +198,7 @@ dev = [
 Works for simple cases.
 
 ```shell
-uv tool install docsub==0.7.1
+uv tool install docsub==0.8.0
 ```
 
 

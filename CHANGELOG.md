@@ -7,6 +7,26 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.8.0](https://github.com/makukha/docsub/releases/tag/v0.8.0) — 2025-01-18
+
+***Breaking 🔥***
+
+- Changed default config file name to `docsub.toml` ([#58](https://github.com/makukha/docsub/issues/58))
+- Renamed `ExecConfig.workdir` and `IncludeConfig.basedir` to `work_dir` and `base_dir` ([#58](https://github.com/makukha/docsub/issues/58))
+- Switch back to `click` ([#58](https://github.com/makukha/docsub/issues/58))
+
+***Added 🌿***
+
+- Provide temporary directory to author of project-local commands ([#58](https://github.com/makukha/docsub/issues/58))
+- Developers of project-local commands can use `Environment` object to get temporary directory etc. ([#58](https://github.com/makukha/docsub/issues/58))
+- Command line options to override config values and config file location ([#58](https://github.com/makukha/docsub/issues/58))
+- Project-local commands can be executed directly with `docsub x cmd-name [args]` ([#58](https://github.com/makukha/docsub/issues/58))
+
+***Misc:***
+
+- Major internal refactoring ([#60](https://github.com/makukha/docsub/issues/60))
+
+
 ## [v0.7.1](https://github.com/makukha/docsub/releases/tag/v0.7.1) — 2025-01-14
 
 ### Fixed

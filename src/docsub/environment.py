@@ -71,7 +71,7 @@ class Environment:
                     raise ValueError(f'Invalid option "{opt}"')
                 if not isinstance(getattr(item, a), BaseModel) and i < len(attrs) - 1:
                     raise TypeError(
-                        f'Nested attributes not allowed for {'.'.join(attrs[:i])}'
+                        f'Nested attributes not allowed for {".".join(attrs[:i])}'
                     )
                 if i == len(attrs) - 1:  # last attribute
                     setattr(item, a, options[opt])
