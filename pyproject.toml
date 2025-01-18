@@ -41,7 +41,7 @@ classifiers = [
 ]
 
 dynamic = ["version"]
-scripts = {docsub = "docsub.__main__:app"}
+scripts = {docsub = "docsub.__main__:cli"}
 
 requires-python = ">=3.9"
 dependencies = [
@@ -78,13 +78,19 @@ files = [
 [tool.hatch.version]
 path = "src/docsub/__init__.py"
 
+# mypy
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+
 # ruff
 
 [tool.ruff]
 target-version = "py313"
+extend-exclude = ["tests/**/docsubfile.py"]
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "B", "S"]
-per-file-ignores."tests/**/*.py" = [
+per-file-ignores."tests/*.py" = [
   "S101",  # Use of `assert` detected
   "S603",  # `subprocess` call: check for execution of untrusted input
 ]

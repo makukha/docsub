@@ -351,6 +351,24 @@ Hi there, Bob!
 <!-- docsub: include tests/test_readme_docsubfile/docsubfile.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
+from docsub import Environment, click, pass_env
+
+@click.group()
+def x():
+    pass
+
+@x.command()
+@click.argument('users', nargs=-1)
+def say_hello(users: tuple[str, ...]) -> None:
+    for user in users:
+        click.echo(f'Hi there, {user}!')
+
+@x.command()
+@click.argument('users', nargs=-1)
+@pass_env
+def log_hello(env: Environment, users: tuple[str, ...]) -> None:
+    base = env.get_temp_dir('log_hello')
+    (base / 'hello.log').write_text(f'said hello to {users}')
 ```
 <!-- docsub: end -->
 
@@ -439,15 +457,23 @@ Docsub uses [loguru](https://loguru.readthedocs.io) for logging. Logging is disa
 <!-- docsub: strip -->
 ```shell
 $ docsub --help
-Usage: docsub COMMAND
+Usage: python -m docsub [OPTIONS] COMMAND [ARGS]...
 
-╭─ Commands ───────────────────────────────────────────────╮
-│ apply      Update Markdown files with embedded content.  │
-│ x          Execute user-defined custom command from      │
-│            local docsubfile.py.                          │
-│ --help -h  Display this message and exit.                │
-│ --version  Display application version.                  │
-╰──────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────╮
+│ --config-file           -c  PATH                                   │
+│ --local-dir             -l  PATH                                   │
+│ --cmd-exec-work-dir         PATH                                   │
+│ --cmd-exec-env-vars         TEXT                                   │
+│ --cmd-help-env-vars         TEXT                                   │
+│ --cmd-include-base-dir      PATH                                   │
+│ --cmd-x-docsubfile      -x  PATH                                   │
+│ --version                         Show the version and exit.       │
+│ --help                            Show this message and exit.      │
+╰────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────╮
+│ apply    Update Markdown files with embedded content.              │
+│ x        Project-local commands.                                   │
+╰────────────────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
 
@@ -459,18 +485,16 @@ Usage: docsub COMMAND
 <!-- docsub: strip -->
 ```shell
 $ docsub apply --help
-Usage: docsub apply [ARGS] [OPTIONS]
+Usage: python -m docsub apply [OPTIONS] FILES...
 
 Update Markdown files with embedded content.
+Read FILES and perform substitutions one by one. If one file depends
+on another, place it after that file.
 
-╭─ Arguments ──────────────────────────────────────────────╮
-│ *  FILE  Markdown files to be processed in order.        │
-│          [required]                                      │
-╰──────────────────────────────────────────────────────────╯
-╭─ Parameters ─────────────────────────────────────────────╮
-│ IN-PLACE --in-place  -i  Process files in-place.         │
-│                          [default: False]                │
-╰──────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────╮
+│ --in-place  -i    Process files in-place                           │
+│ --help            Show this message and exit.                      │
+╰────────────────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
 
@@ -482,15 +506,13 @@ Update Markdown files with embedded content.
 <!-- docsub: strip -->
 ```shell
 $ docsub x --help
-Usage: docsub x [ARGS]
+Usage: python -m docsub x [OPTIONS] COMMAND [ARGS]...
 
-Execute user-defined custom command from local
-docsubfile.py.
+Project-local commands.
 
-╭─ Arguments ──────────────────────────────────────────────╮
-│ *  COMMAND  Custom command name. [required]              │
-│    PARAMS   Custom command parameters.                   │
-╰──────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                            │
+╰────────────────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
 

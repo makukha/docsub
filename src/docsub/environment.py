@@ -1,32 +1,37 @@
 from dataclasses import dataclass
+from functools import cached_property
 from pathlib import Path
 from typing import Any, Self
 
-from click import Group
+from importloc import import_module_from_file
 from pydantic import BaseModel
+import rich_click as click
 
+from .__base__ import DocsubfileError, DocsubfileNotFound
 from .config import DEFAULT_CONFIG_FILE, DocsubSettings, load_config
 
 
 @dataclass
 class Environment:
     conf: DocsubSettings
+    ctx: click.Context
 
-    config_file: Path
+    config_file: Path | None
     project_root: Path
-    x: Group | None = None
 
     @classmethod
     def from_config_file(
         cls,
+        ctx: click.Context,
         config_file: Path | None,
         options: dict[str, Any] | None = None,
     ) -> Self:
-        if config_file and Path(DEFAULT_CONFIG_FILE).exists():
+        if not config_file and DEFAULT_CONFIG_FILE.exists():
             config_file = DEFAULT_CONFIG_FILE
         conf = load_config(config_file)
         env = cls(
             conf=conf,
+            ctx=ctx,
             config_file=config_file,
             project_root=(config_file.parent if config_file else Path('.')).resolve(),
         )
@@ -37,7 +42,17 @@ class Environment:
     def local_dir(self) -> Path:
         return self._from_project_root(self.conf.local_dir)
 
-    def provide_temp_dir(self, name: str | Path) -> Path:
+    @cached_property
+    def x_group(self) -> click.Group:
+        path = self.conf.cmd.x.docsubfile
+        if not path.exists():
+            raise DocsubfileNotFound(f'Docsubfile "{path}" not found')
+        docsubfile = import_module_from_file(path, 'docsubfile', replace=True)
+        if not hasattr(docsubfile, 'x') or not isinstance(docsubfile.x, click.Group):
+            raise DocsubfileError(f'Docsubfile "{path}" has no valid "x" group')
+        return docsubfile.x
+
+    def get_temp_dir(self, name: str | Path) -> Path:
         path = self.local_dir / f'tmp_{name}'
         path.mkdir(parents=True, exist_ok=True)
         return path
@@ -62,3 +77,6 @@ class Environment:
                     setattr(item, a, options[opt])
                 else:
                     item = getattr(item, a)
+
+
+pass_env = click.make_pass_decorator(Environment)

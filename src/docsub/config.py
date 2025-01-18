@@ -14,12 +14,12 @@ from .commands import CmdConfig
 from .logging import LoggingConfig, configure_logging
 
 
-DEFAULT_CONFIG_FILE = 'docsub.toml'
-DEFAULT_DOCSUB_DIR = '.docsub'
+DEFAULT_CONFIG_FILE = Path('docsub.toml')
+DEFAULT_DOCSUB_DIR = Path('.docsub')
 
 
 class DocsubSettings(BaseSettings):
-    local_dir: Path = Path(DEFAULT_DOCSUB_DIR)
+    local_dir: Path = DEFAULT_DOCSUB_DIR
 
     cmd: Annotated[CmdConfig, Field(default_factory=CmdConfig)]
     logging: Annotated[LoggingConfig, Field(default_factory=LoggingConfig)]
@@ -27,6 +27,7 @@ class DocsubSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix='DOCSUB_',
         nested_model_default_partial_update=True,
+        toml_file=[],
     )
 
     @classmethod
@@ -47,7 +48,9 @@ class DocsubSettings(BaseSettings):
 def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
     """Load config from file.
     """
-    conf = DocsubSettings(_toml_file=config_file, **kwargs)
+    if config_file:
+        DocsubSettings.model_config['toml_file'][:] = [config_file]
+    conf = DocsubSettings(**kwargs)  # type: ignore
     configure_logging(conf.logging)
     logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
     return conf

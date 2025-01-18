@@ -1,23 +1,18 @@
-from typing import Any, Iterable, Self, override
+from typing import Iterable, override
 
 from ..__base__ import Substitution, Line, Location, Modifier
 
 
 class StripCommand(Modifier, name='strip'):
-    def __init__(self, loc: Location):
-        super().__init__(loc)
+    def __init__(self, args: str, *, loc: Location, **kw) -> None:
+        super().__init__(args, loc=loc)
+        if args.strip():
+            raise self.exc_invalid_args()
         self.lines: list[Line] = []
         self.saw_non_empty = False
 
     @override
-    @classmethod
-    def parse_args(cls, args: str, *, conf: Any = None, loc: Location) -> Self:
-        if args.strip():
-            raise cls.error_invalid_args(args, loc=loc)
-        return cls(loc)
-
-    @override
-    def on_produced_line(self, line: Line, ctx: Substitution) -> Iterable[Line]:
+    def on_produced_line(self, line: Line, sub: Substitution) -> Iterable[Line]:
         line.text = line.text.strip() + '\n'
 
         if line.text.isspace():

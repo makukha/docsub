@@ -4,12 +4,12 @@ from pathlib import Path
 import rich_click as click
 
 from . import __version__
+from .__base__ import DocsubfileNotFound
 from .environment import Environment
 from .process import process_paths
 
 
 @click.group()
-@click.version_option(__version__, prog_name='docsub')
 @click.option('-c', '--config-file', type=Path)
 @click.option('-l', '--local-dir', type=Path)
 @click.option( '--cmd-exec-work-dir', type=Path)
@@ -17,8 +17,9 @@ from .process import process_paths
 @click.option( '--cmd-help-env-vars', type=str)
 @click.option( '--cmd-include-base-dir', type=Path)
 @click.option( '-x', '--cmd-x-docsubfile', type=Path)
+@click.version_option(__version__, prog_name='docsub')
 @click.pass_context
-def app(
+def cli(
     ctx: click.Context,
     config_file: Path | None = None,
     # root settings
@@ -34,6 +35,7 @@ def app(
     def maybe_json_loads(value: str | None) -> dict | None:
         if value is not None:
             return json.loads(value)
+        return None
 
     ctx.obj = Environment.from_config_file(
         ctx=ctx,
@@ -49,7 +51,7 @@ def app(
     )
 
 
-@app.command()
+@cli.command()
 @click.argument('files', type=Path, nargs=-1, required=True)
 @click.option('-i', '--in-place', is_flag=True, help='Process files in-place')
 @click.pass_context
@@ -67,17 +69,23 @@ def apply(
     process_paths(files, in_place=in_place, env=ctx.obj)
 
 
-class XGroup(click.RichMultiCommand):
-    def list_commands(self, ctx):
+class XGroup(click.RichGroup):
+    def list_commands(self, ctx) -> list[str]:
         env: Environment = ctx.obj
-        return env.x_group.list_commands(ctx)
+        try:
+            return env.x_group.list_commands(ctx)
+        except DocsubfileNotFound:
+            return []
 
-    def get_command(self, ctx, name):
+    def get_command(self, ctx, name) -> click.Command | None:
         env: Environment = ctx.obj
-        return env.x_group.get_command(ctx, name)
+        try:
+            return env.x_group.get_command(ctx, name)
+        except DocsubfileNotFound:
+            return None
 
 
-@app.command(cls=XGroup)
+@cli.command(cls=XGroup)
 def x():
     """
     Project-local commands.
@@ -85,4 +93,4 @@ def x():
 
 
 if __name__ == '__main__':
-    app()
+    cli()

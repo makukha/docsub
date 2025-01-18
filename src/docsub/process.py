@@ -11,7 +11,7 @@ def process_paths(
     in_place: bool = False,
     env: Environment,
 ) -> None:
-    proc_md = MarkdownProcessor(env.conf)
+    proc_md = MarkdownProcessor(env)
     for path in paths:
         lines = proc_md.process_document(path)  # iterator
         if in_place:

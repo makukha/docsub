@@ -5,15 +5,15 @@ import re
 from typing import Self, override
 
 from ..__base__ import (
-    Substitution,
     InvalidSubstitution,
     Line,
     Location,
     StopSubstitution,
+    Substitution,
     SyntaxElement,
 )
 from ..commands import COMMANDS
-from ..config import DocsubSettings
+from ..environment import Environment
 
 
 RX_FENCE = re.compile(r'^(?P<indent>\s*)(?P<fence>```+|~~~+).*$')
@@ -29,20 +29,28 @@ RX_CMD = re.compile(
 
 @dataclass
 class BlockSubstitution(Substitution):
-    conf: DocsubSettings
-    all_commands_consumed: bool = False
+    env: Environment | None
+
+    def __post_init__(self):
+        self.all_commands_consumed = False
 
     @override
     @classmethod
-    def match(cls, line: Line, conf: DocsubSettings) -> Self | None:
+    def match(cls, line: Line) -> Self | None:
         if not RX_DOCSUB.match(line.text):
             return None
         if not (match := RX_BEGIN.match(line.text)):
             raise cls.error_invalid(line.text, loc=line.loc)
-        return cls(loc=line.loc, id=match.group('id') or None, conf=conf)
+        return cls(loc=line.loc, id=match.group('id') or None, env=None)
+
+    def set_env(self, env: Environment) -> None:
+        self.env = env
 
     @override
     def consume_line(self, line: Line) -> Iterable[Line]:
+        if self.env is None:
+            raise ValueError('Environment is not set')
+
         # block end?
         if m := RX_END.match(line.text):
             if (m.group('id') or None) == self.id:  # end of this block
@@ -63,11 +71,12 @@ class BlockSubstitution(Substitution):
         # command?
         if m := RX_CMD.match(line.text):
             name = m.group('name')
-            conf = getattr(self.conf.cmd, name, None)
-            cmd = COMMANDS[name].parse_args(
+            conf = getattr(self.env.conf.cmd, name, None)
+            cmd = COMMANDS[name](
                 args=m.group('args') or '',
                 conf=conf,
                 loc=line.loc,
+                env=self.env,
             )
             self.append_command(cmd)
             yield line
@@ -108,8 +117,8 @@ class Fence(SyntaxElement):
 
 
 class MarkdownProcessor:
-    def __init__(self, conf: DocsubSettings):
-        self.conf = conf
+    def __init__(self, env: Environment):
+        self.env = env
 
     def process_document(self, file: Path) -> Iterable[str]:
         block: BlockSubstitution | None = None
@@ -136,9 +145,9 @@ class MarkdownProcessor:
                         fences.append(fence)
 
                 # block begins?
-                elif block := BlockSubstitution.match(line, conf=self.conf):
+                elif block := BlockSubstitution.match(line):
+                    block.set_env(self.env)
                     yield line.text
-                    block.conf = self.conf
 
                 # top level fenced code block?
                 elif fence := Fence.match(line):

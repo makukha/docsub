@@ -3,9 +3,15 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
-from typing import Any, ClassVar, Self
+from typing import TYPE_CHECKING, ClassVar, Self
 
-from pydantic import BaseModel as Config
+from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from .environment import Environment  # noqa: F401
+
+
+class Config(BaseModel): ...
 
 
 # syntax
@@ -62,13 +68,12 @@ class Substitution(SyntaxElement, ABC):
     """
 
     id: str | None = None
-    conf: Any
     producers: list['Producer'] = field(default_factory=list)
     modifiers: list['Modifier'] = field(default_factory=list)
 
     @classmethod
     @abstractmethod
-    def match(cls, line: Line, conf: Any) -> Self | None:
+    def match(cls, line: Line) -> Self | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -113,93 +118,75 @@ class Substitution(SyntaxElement, ABC):
         yield from lines
 
 
-class Command(ABC):
+class Command[C: Config](ABC):
     """
     Base command.
     """
 
     name: ClassVar[str]
-    conf_class: ClassVar[type[Config] | None]
+    conf: Config
 
-    loc: Location
+    def __init_subclass__(cls, *, name: str, **kw):
+        super().__init_subclass__(**kw)
+        cls.name = name
 
-    def __init__(self, loc: Location) -> None:
+    def __init__(
+        self,
+        args: str,
+        *,
+        loc: Location,
+        conf: C | None = None,
+        env = None,  # type: Environment | None
+    ) -> None:
+        conf_class = self.__annotations__['conf']
+        if conf is not None:
+            if conf_class is not None and not isinstance(conf, conf_class):
+                raise TypeError(f'Expected {conf_class}, received {type(conf)}')
+        self.args = args
         self.loc = loc
-
-    @classmethod
-    @abstractmethod
-    def parse_args(cls, args: str, *, conf: Config | None, loc: Location) -> Self:
-        raise NotImplementedError
+        self.conf = conf if conf is not None else conf_class()
+        self.env = env
 
     # error helpers
 
-    @classmethod
-    def assert_conf[C: Config](cls, conf: Config | None, conf_class: type[C]) -> C:
-        if not isinstance(conf, conf_class):
-            raise TypeError(f'Expected {conf_class}, received {type(conf)}')
-        return conf
-
-    @classmethod
-    def error_invalid_args(cls, args: str, loc: Location) -> 'InvalidCommand':
+    def exc_invalid_args(self) -> 'InvalidCommand':
         return InvalidCommand(
-            f'Invalid docsub command "{cls.name}" args: {args}',
-            loc=loc,
+            f'Invalid args "{self.args}" for docsub directive "{self.name}"',
+            loc=self.loc,
         )
 
-    def error_runtime(self, args: Any) -> 'RuntimeCommandError':
+    def exc_runtime_error(self, msg) -> 'RuntimeCommandError':
         return RuntimeCommandError(
-            f'Runtime error in "{self.name}" command: {args}',
+            f'Runtime error in docsub command "{self.name}": {msg}',
             loc=self.loc,
         )
 
 
-class Producer(Command, ABC):
+class Producer(Command, ABC, name=''):
     """
     Base producing command.
     """
 
-    def __init_subclass__(
-        cls,
-        *,
-        name: str,
-        conf_class: type[Config] | None = None,
-        **kwargs,
-    ):
-        super().__init_subclass__(**kwargs)
-        cls.name = name
-        cls.conf_class = conf_class
-
     @abstractmethod
-    def produce(self, ctx: Substitution) -> Iterable[Line]:
+    def produce(self, sub: Substitution) -> Iterable[Line]:
         raise NotImplementedError
 
 
-class Modifier(Command, ABC):
+class Modifier[C: type[Config]](Command, ABC, name=''):
     """
     Base modifying command.
     """
 
-    def __init_subclass__(
-        cls,
-        *,
-        name: str,
-        conf_class: type[Config] | None = None,
-        **kwargs,
-    ):
-        super().__init_subclass__(**kwargs)
-        cls.name = name
-        cls.conf_class = conf_class
-
-    def on_content_line(self, line: Line, ctx: Substitution) -> None:
+    def on_content_line(self, line: Line, sub: Substitution) -> None:
         pass
 
-    def before_producers(self, ctx: Substitution) -> Iterable[Line]:
+    def before_producers(self, sub: Substitution) -> Iterable[Line]:
         yield from ()
 
-    def on_produced_line(self, line: Line, ctx: Substitution) -> Iterable[Line]:
+    def on_produced_line(self, line: Line, sub: Substitution) -> Iterable[Line]:
         yield line
 
-    def after_producers(self, ctx: Substitution) -> Iterable[Line]:
+    def after_producers(self, sub: Substitution) -> Iterable[Line]:
         yield from ()
 
 
@@ -213,13 +200,25 @@ class DocsubError(Exception):
     """
 
     message: str
-    loc: Location | None
+    loc: Location | None = None
 
     def __str__(self) -> str:
         if self.loc:
             return f'{self.loc.leader()}{self.message}'
         else:
             return self.message
+
+
+class DocsubfileError(DocsubError):
+    """
+    Invalid docsubfile.
+    """
+
+
+class DocsubfileNotFound(DocsubfileError, FileNotFoundError):
+    """
+    Docsubfile not found.
+    """
 
 
 class InvalidCommand(DocsubError):
