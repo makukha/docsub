@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from loguru import logger
@@ -9,19 +10,24 @@ from pydantic_settings import (
     TomlConfigSettingsSource,
 )
 
-from .commands import CommandsConfig
+from .commands import CmdConfig
 from .logging import LoggingConfig, configure_logging
 
 
+DEFAULT_CONFIG_FILE = Path('docsub.toml')
+DEFAULT_DOCSUB_DIR = Path('.docsub')
+
+
 class DocsubSettings(BaseSettings):
-    command: Annotated[CommandsConfig, Field(default_factory=CommandsConfig)]
+    local_dir: Path = DEFAULT_DOCSUB_DIR
+
+    cmd: Annotated[CmdConfig, Field(default_factory=CmdConfig)]
     logging: Annotated[LoggingConfig, Field(default_factory=LoggingConfig)]
 
     model_config = SettingsConfigDict(
         env_prefix='DOCSUB_',
-        env_nested_delimiter='_',
         nested_model_default_partial_update=True,
-        toml_file='.docsub.toml',
+        toml_file=[],
     )
 
     @classmethod
@@ -39,11 +45,12 @@ class DocsubSettings(BaseSettings):
         )
 
 
-def load_config() -> DocsubSettings:
+def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
+    """Load config from file.
     """
-    Load config from file.
-    """
-    conf = DocsubSettings()  # type: ignore
-    configure_logging(conf.logging)  # type: ignore
+    if config_file:
+        DocsubSettings.model_config['toml_file'] = [config_file]
+    conf = DocsubSettings(**kwargs)  # type: ignore
+    configure_logging(conf.logging)
     logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
     return conf

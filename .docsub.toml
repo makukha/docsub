@@ -1,5 +1,0 @@
-[command.help]
-env = { COLUMNS = "60" }
-
-[logging]
-level = "DEBUG"

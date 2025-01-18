@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from pathlib import Path
 
-from .config import DocsubSettings
+from .environment import Environment
 from .processors.md import MarkdownProcessor
 
 
@@ -9,9 +9,9 @@ def process_paths(
     paths: Iterable[Path],
     *,
     in_place: bool = False,
-    conf: DocsubSettings,
+    env: Environment,
 ) -> None:
-    proc_md = MarkdownProcessor(conf)
+    proc_md = MarkdownProcessor(env)
     for path in paths:
         lines = proc_md.process_document(path)  # iterator
         if in_place:

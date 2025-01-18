@@ -8,7 +8,7 @@ from .help import HelpCommand, HelpConfig
 from .include import IncludeCommand, IncludeConfig
 from .lines import LinesCommand
 from .strip import StripCommand
-from .x import XCommand
+from .x import XCommand, XConfig
 
 
 COMMANDS: dict[str, type[Command]] = dict(
@@ -21,7 +21,8 @@ COMMANDS: dict[str, type[Command]] = dict(
 )
 
 
-class CommandsConfig(Config):
+class CmdConfig(Config):
     exec: Annotated[ExecConfig, Field(default_factory=ExecConfig)]
     help: Annotated[HelpConfig, Field(default_factory=HelpConfig)]
     include: Annotated[IncludeConfig, Field(default_factory=IncludeConfig)]
+    x: Annotated[XConfig, Field(default_factory=XConfig)]

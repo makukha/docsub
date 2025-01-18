@@ -1,0 +1,5 @@
+[cmd.help]
+env_vars = { COLUMNS = "70" }
+
+[logging]
+level = "DEBUG"

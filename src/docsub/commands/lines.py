@@ -1,5 +1,5 @@
 import re
-from typing import Any, Iterable, Self, override
+from typing import Iterable, override
 
 from ..__base__ import Substitution, Line, Location, Modifier
 
@@ -11,29 +11,20 @@ RX_LINES = re.compile(
 
 
 class LinesCommand(Modifier, name='lines'):
-    def __init__(self, first: int, last: int, loc: Location):
-        super().__init__(loc)
-        self.first = first
-        self.last = last
+    def __init__(self, args: str, *, loc: Location, **kw) -> None:
+        super().__init__(args, loc=loc)
+        if not args.strip():
+            raise self.exc_invalid_args()
+        if not (match := RX_LINES.match(args)):
+            raise self.exc_invalid_args()
+        self.first = int(match.group('first') or 0)
+        self.last = int(match.group('last') or 0)
         self.first_lines: list[Line] = []
         self.last_lines: list[Line] = []
         self.is_empty = True
 
     @override
-    @classmethod
-    def parse_args(cls, args: str, *, conf: Any = None, loc: Location) -> Self:
-        if not args.strip():
-            raise cls.error_invalid_args(args, loc=loc)
-        if not (match := RX_LINES.match(args)):
-            raise cls.error_invalid_args(args, loc=loc)
-        return cls(
-            first=int(match.group('first') or 0),
-            last=int(match.group('last') or 0),
-            loc=loc,
-        )
-
-    @override
-    def on_content_line(self, line: Line, ctx: Substitution) -> None:
+    def on_content_line(self, line: Line, sub: Substitution) -> None:
         is_first_full = self.first == len(self.first_lines)
         is_last_full = self.last == len(self.last_lines)
         if not is_first_full:
@@ -50,9 +41,9 @@ class LinesCommand(Modifier, name='lines'):
             raise AssertionError('unreachable')
 
     @override
-    def before_producers(self, ctx: Substitution) -> Iterable[Line]:
+    def before_producers(self, sub: Substitution) -> Iterable[Line]:
         yield from self.first_lines
 
     @override
-    def after_producers(self, ctx: Substitution) -> Iterable[Line]:
+    def after_producers(self, sub: Substitution) -> Iterable[Line]:
         yield from self.last_lines
