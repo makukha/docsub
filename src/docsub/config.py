@@ -46,8 +46,7 @@ class DocsubSettings(BaseSettings):
 
 
 def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
-    """Load config from file.
-    """
+    """Load config from file."""
     if config_file:
         DocsubSettings.model_config['toml_file'] = [config_file]
     conf = DocsubSettings(**kwargs)  # type: ignore

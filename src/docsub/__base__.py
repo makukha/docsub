@@ -136,7 +136,7 @@ class Command[C: Config](ABC):
         *,
         loc: Location,
         conf: C | None = None,
-        env = None,  # type: Environment | None
+        env=None,  # type: Environment | None
     ) -> None:
         conf_class = self.__annotations__['conf']
         if conf is not None:

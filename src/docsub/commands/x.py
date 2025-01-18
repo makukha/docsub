@@ -7,6 +7,7 @@ import shlex
 from typing import TYPE_CHECKING, override
 
 from ..__base__ import Config, DocsubfileError, Line, Location, Producer, Substitution
+
 if TYPE_CHECKING:
     from ..environment import Environment  # noqa: F401
 
