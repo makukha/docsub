@@ -49,7 +49,7 @@ def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
     """Load config from file.
     """
     if config_file:
-        DocsubSettings.model_config['toml_file'][:] = [config_file]
+        DocsubSettings.model_config['toml_file'] = [config_file]
     conf = DocsubSettings(**kwargs)  # type: ignore
     configure_logging(conf.logging)
     logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
