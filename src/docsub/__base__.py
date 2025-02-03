@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Optional, TypedDict, Union
+from typing import TYPE_CHECKING, ClassVar, Optional, TypedDict, Union
 
 from pydantic import BaseModel
 from typing_extensions import Self, Unpack
@@ -124,31 +124,31 @@ class CmdKw(TypedDict):
     env: 'Environment'
 
 
-class Command(ABC):
+class Command:
     """
     Base command.
     """
 
     name: ClassVar[str]
-    conf: Config
+    conf: Optional[Config]
 
-    def __init_subclass__(cls, *, name: str, **kwargs: dict[str, Any]) -> None:
-        super().__init_subclass__(**kwargs)
+    def __init_subclass__(cls, *, name: str) -> None:
+        super().__init_subclass__()
         cls.name = name
 
-    def __init__(
-        self,
-        args: str,
-        *,
-        conf: Optional[Config],
-        **kw: Unpack[CmdKw],
-    ) -> None:
+    def __init__(self, args: str, conf: Optional[Config], **kw: Unpack[CmdKw]) -> None:
         conf_class = self.__annotations__['conf']
-        if conf is not None:
-            if conf_class is not None and not isinstance(conf, conf_class):
+        if conf_class is None:
+            if conf is not None:
+                raise ValueError(f'Config not allowed for command "{self.name}"')
+            self.conf = None
+        elif conf is None:
+            self.conf = conf_class()
+        else:
+            if not isinstance(conf, conf_class):
                 raise TypeError(f'Expected {conf_class}, received {type(conf)}')
+            self.conf = conf
         self.args = args
-        self.conf = conf if conf is not None else conf_class()
         self.loc = kw['loc']
         self.env = kw['env']
 
@@ -167,17 +167,16 @@ class Command(ABC):
         )
 
 
-class Producer(Command, ABC, name=NotImplemented):
+class Producer(Command, name=NotImplemented):
     """
     Base producing command.
     """
 
-    @abstractmethod
     def produce(self, sub: Substitution) -> Iterable[Line]:
-        raise NotImplementedError
+        yield from ()
 
 
-class Modifier(Command, ABC, name=NotImplemented):
+class Modifier(Command, name=NotImplemented):
     """
     Base modifying command.
     """

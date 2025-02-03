@@ -1,5 +1,5 @@
 import re
-from typing import Iterable
+from typing import Any, Iterable
 from typing_extensions import Unpack, override
 
 from ..__base__ import CmdKw, Substitution, Line, Modifier
@@ -12,8 +12,10 @@ RX_LINES = re.compile(
 
 
 class LinesCommand(Modifier, name='lines'):
-    def __init__(self, args: str, conf: type[None], **kw: Unpack[CmdKw]) -> None:
-        super().__init__(args, conf=None, **kw)
+    conf: None
+
+    def __init__(self, args: str, conf: Any, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         if not args.strip():
             raise self.exc_invalid_args()
         if not (match := RX_LINES.match(args)):
