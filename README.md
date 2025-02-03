@@ -2,10 +2,12 @@
 > Substitute dynamically generated content in Markdown files
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
-[![versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/docsub)
 [![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.8.0)](https://pypi.python.org/pypi/docsub)
-[![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)
-](https://github.com/makukha/docsub)
+[![python versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/docsub)
+[![tests](https://raw.githubusercontent.com/makukha/docsub/v0.8.0/docs/_static/badge-tests.svg)](https://github.com/makukha/docsub)
+[![coverage](https://raw.githubusercontent.com/makukha/docsub/v0.8.0/docs/_static/badge-coverage.svg)](https://github.com/makukha/docsub)
+[![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
+[![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)](https://github.com/makukha/docsub)
 
 > [!WARNING]
 > * With `docsub`, every documentation file may become executable.
@@ -28,11 +30,12 @@
 # Use cases
 
 * Manage partially duplicate docs for multiple destinations
+* Manage docs for monorepositories
 * Embed CLI reference in docs
 * Embed dynamically generated content:
-  * Models evaluation results
   * Project metadata
   * Test reports
+  * Models evaluation results
 
 > [!NOTE]
 > This file uses docsub itself. Dig into raw markup if interested.
@@ -529,7 +532,7 @@ This project appeared to maintain docs for [multipython](https://github.com/maku
 
 # License
 
-[MIT License](https://github.com/makukha/caseutil/blob/main/LICENSE)
+[MIT License](https://github.com/makukha/docsub/blob/main/LICENSE)
 
 
 # Changelog
