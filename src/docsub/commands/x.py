@@ -4,7 +4,9 @@ import io
 from pathlib import Path
 import re
 import shlex
-from typing import Unpack, override
+from typing import Optional
+
+from typing_extensions import Unpack, override
 
 from ..__base__ import (
     CmdKw,
@@ -42,7 +44,7 @@ class XCommand(Producer, name='x'):
         self.ctx = self.cmd.make_context(name, args=params, parent=self.env.ctx)
 
     @override
-    def produce(self, sub: Substitution | None) -> Iterable[Line]:
+    def produce(self, sub: Optional[Substitution]) -> Iterable[Line]:
         out = io.StringIO()
         with redirect_stdout(out):
             self.cmd.invoke(self.ctx)

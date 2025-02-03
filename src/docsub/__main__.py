@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import rich_click as click
 
@@ -22,17 +22,17 @@ from .process import process_paths
 @click.pass_context
 def cli(
     ctx: click.Context,
-    config_file: Path | None = None,
+    config_file: Optional[Path] = None,
     # root settings
-    local_dir: Path | None = None,
+    local_dir: Optional[Path] = None,
     # commands settings
-    cmd_exec_work_dir: Path | None = None,
-    cmd_exec_env_vars: str | None = None,
-    cmd_help_env_vars: str | None = None,
-    cmd_include_base_dir: Path | None = None,
-    cmd_x_docsubfile: Path | None = None,
+    cmd_exec_work_dir: Optional[Path] = None,
+    cmd_exec_env_vars: Optional[str] = None,
+    cmd_help_env_vars: Optional[str] = None,
+    cmd_include_base_dir: Optional[Path] = None,
+    cmd_x_docsubfile: Optional[Path] = None,
 ) -> None:
-    def maybe_json_loads(value: str | None) -> Any | None:
+    def maybe_json_loads(value: Optional[str]) -> Any:
         if value is not None:
             return json.loads(value)
         return None
@@ -77,7 +77,7 @@ class XGroup(click.RichGroup):
         except DocsubfileNotFound:
             return []
 
-    def get_command(self, ctx: click.Context, name: str) -> click.Command | None:
+    def get_command(self, ctx: click.Context, name: str) -> Optional[click.Command]:
         env: Environment = ctx.obj
         try:
             return env.x_group.get_command(ctx, name)

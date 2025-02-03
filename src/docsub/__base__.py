@@ -3,9 +3,10 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Self, TypedDict, Unpack
+from typing import TYPE_CHECKING, Any, ClassVar, Optional, TypedDict, Union
 
 from pydantic import BaseModel
+from typing_extensions import Self, Unpack
 
 if TYPE_CHECKING:
     from .environment import Environment  # noqa: F401
@@ -23,9 +24,9 @@ class Location:
     Location in file.
     """
 
-    fname: str | Path
-    lineno: int | None = None
-    colno: int | None = None
+    fname: Union[str, Path]
+    lineno: Optional[int] = None
+    colno: Optional[int] = None
 
     def leader(self) -> str:
         parts = (
@@ -61,19 +62,19 @@ class Line(SyntaxElement):
 # substitution
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Substitution(SyntaxElement, ABC):
     """
     Base substitution request.
     """
 
-    id: str | None = None
+    id: Optional[str] = None
     producers: list['Producer'] = field(default_factory=list)
     modifiers: list['Modifier'] = field(default_factory=list)
 
     @classmethod
     @abstractmethod
-    def match(cls, line: Line) -> Self | None:
+    def match(cls, line: Line) -> Optional[Self]:
         raise NotImplementedError
 
     @abstractmethod
@@ -135,7 +136,12 @@ class Command(ABC):
         super().__init_subclass__(**kwargs)
         cls.name = name
 
-    def __init__(self, args: str, *, conf: Config | None, **kw: Unpack[CmdKw]) -> None:
+    def __init__(
+        self,
+        args: str, *,
+        conf: Optional[Config],
+        **kw: Unpack[CmdKw],
+    ) -> None:
         conf_class = self.__annotations__['conf']
         if conf is not None:
             if conf_class is not None and not isinstance(conf, conf_class):
@@ -198,7 +204,7 @@ class DocsubError(Exception):
     """
 
     message: str
-    loc: Location | None = None
+    loc: Optional[Location] = None
 
     def __str__(self) -> str:
         if self.loc:

@@ -1,8 +1,9 @@
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Annotated, Unpack, override
+from typing import Annotated
 
 from pydantic import Field
+from typing_extensions import Unpack, override
 
 from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
