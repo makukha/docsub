@@ -45,11 +45,11 @@ class DocsubSettings(BaseSettings):
         )
 
 
-def load_config(config_file: Optional[Path], **kwargs: dict[str, Any]) -> DocsubSettings:
+def load_config(config_file: Optional[Path], **kw: dict[str, Any]) -> DocsubSettings:
     """Load config from file."""
     if config_file:
         DocsubSettings.model_config['toml_file'] = [config_file]
-    conf = DocsubSettings(**kwargs)  # type: ignore
+    conf = DocsubSettings(**kw)  # type: ignore
     configure_logging(conf.logging)
     logger.debug(f'Loaded configuration: {conf.model_dump_json()}')
     return conf

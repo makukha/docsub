@@ -138,7 +138,8 @@ class Command(ABC):
 
     def __init__(
         self,
-        args: str, *,
+        args: str,
+        *,
         conf: Optional[Config],
         **kw: Unpack[CmdKw],
     ) -> None:
