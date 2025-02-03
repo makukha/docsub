@@ -4,12 +4,19 @@ import io
 from pathlib import Path
 import re
 import shlex
-from typing import TYPE_CHECKING, override
+from typing import Optional
 
-from ..__base__ import Config, DocsubfileError, Line, Location, Producer, Substitution
+from typing_extensions import Unpack, override
 
-if TYPE_CHECKING:
-    from ..environment import Environment  # noqa: F401
+from ..__base__ import (
+    CmdKw,
+    Config,
+    DocsubfileError,
+    Line,
+    Location,
+    Producer,
+    Substitution,
+)
 
 
 RX_CMD = re.compile(r'^\s*(?P<cmd>\S+)(\s+(?P<params>.*))?$')
@@ -22,30 +29,22 @@ class XConfig(Config):
 class XCommand(Producer, name='x'):
     conf: XConfig
 
-    def __init__(
-        self,
-        args: str,
-        *,
-        conf: XConfig,
-        loc: Location,
-        env,  # type: Environment
-    ) -> None:
-        super().__init__(args, loc=loc, conf=conf, env=env)
-        self.ctx = env.ctx
+    def __init__(self, args: str, *, conf: XConfig, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         if (match := RX_CMD.match(args)) is None:
             raise self.exc_invalid_args()
         name = match.group('cmd')
-        cmd = env.x_group.commands.get(name, None)
+        cmd = self.env.x_group.commands.get(name, None)
         if cmd is None:
             raise DocsubfileError(
-                f'Command "{name}" not found in "{conf.docsubfile}"', loc=loc
+                f'Command "{name}" not found in "{conf.docsubfile}"', loc=self.loc
             )
         params = shlex.split(match.group('params'))
         self.cmd = cmd
-        self.ctx = self.cmd.make_context(name, args=params, parent=env.ctx)
+        self.ctx = self.cmd.make_context(name, args=params, parent=self.env.ctx)
 
     @override
-    def produce(self, sub: Substitution | None) -> Iterable[Line]:
+    def produce(self, sub: Optional[Substitution]) -> Iterable[Line]:
         out = io.StringIO()
         with redirect_stdout(out):
             self.cmd.invoke(self.ctx)

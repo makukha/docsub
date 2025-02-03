@@ -2,7 +2,9 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import Self, override
+from typing import Optional
+
+from typing_extensions import Self, override
 
 from ..__base__ import (
     InvalidSubstitution,
@@ -29,14 +31,14 @@ RX_CMD = re.compile(
 
 @dataclass
 class BlockSubstitution(Substitution):
-    env: Environment | None
+    env: Optional[Environment] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.all_commands_consumed = False
 
     @override
     @classmethod
-    def match(cls, line: Line) -> Self | None:
+    def match(cls, line: Line) -> Optional[Self]:
         if not RX_DOCSUB.match(line.text):
             return None
         if not (match := RX_BEGIN.match(line.text)):
@@ -105,7 +107,7 @@ class Fence(SyntaxElement):
     fence: str
 
     @classmethod
-    def match(cls, line: Line) -> Self | None:
+    def match(cls, line: Line) -> Optional[Self]:
         if match := RX_FENCE.match(line.text):
             return cls(**match.groupdict(), loc=line.loc)
         return None
@@ -121,7 +123,7 @@ class MarkdownProcessor:
         self.env = env
 
     def process_document(self, file: Path) -> Iterable[str]:
-        block: BlockSubstitution | None = None
+        block: Optional[BlockSubstitution] = None
         fences: list[Fence] = []
 
         with file.open('rt') as f:

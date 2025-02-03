@@ -1,11 +1,15 @@
-from typing import Iterable, override
+from typing import Any, Iterable
 
-from ..__base__ import Substitution, Line, Location, Modifier
+from typing_extensions import Unpack, override
+
+from ..__base__ import CmdKw, Substitution, Line, Modifier
 
 
 class StripCommand(Modifier, name='strip'):
-    def __init__(self, args: str, *, loc: Location, **kw) -> None:
-        super().__init__(args, loc=loc)
+    conf: None
+
+    def __init__(self, args: str, conf: Any, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         if args.strip():
             raise self.exc_invalid_args()
         self.lines: list[Line] = []

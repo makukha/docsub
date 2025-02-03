@@ -3,9 +3,10 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Self
+from typing import TYPE_CHECKING, ClassVar, Optional, TypedDict, Union
 
 from pydantic import BaseModel
+from typing_extensions import Self, Unpack
 
 if TYPE_CHECKING:
     from .environment import Environment  # noqa: F401
@@ -23,9 +24,9 @@ class Location:
     Location in file.
     """
 
-    fname: str | Path
-    lineno: int | None = None
-    colno: int | None = None
+    fname: Union[str, Path]
+    lineno: Optional[int] = None
+    colno: Optional[int] = None
 
     def leader(self) -> str:
         parts = (
@@ -61,19 +62,19 @@ class Line(SyntaxElement):
 # substitution
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Substitution(SyntaxElement, ABC):
     """
     Base substitution request.
     """
 
-    id: str | None = None
+    id: Optional[str] = None
     producers: list['Producer'] = field(default_factory=list)
     modifiers: list['Modifier'] = field(default_factory=list)
 
     @classmethod
     @abstractmethod
-    def match(cls, line: Line) -> Self | None:
+    def match(cls, line: Line) -> Optional[Self]:
         raise NotImplementedError
 
     @abstractmethod
@@ -118,34 +119,38 @@ class Substitution(SyntaxElement, ABC):
         yield from lines
 
 
-class Command[C: Config](ABC):
+class CmdKw(TypedDict):
+    loc: Location
+    env: 'Environment'
+
+
+class Command:
     """
     Base command.
     """
 
     name: ClassVar[str]
-    conf: Config
+    conf: Optional[Config]
 
-    def __init_subclass__(cls, *, name: str, **kw):
-        super().__init_subclass__(**kw)
+    def __init_subclass__(cls, *, name: str) -> None:
+        super().__init_subclass__()
         cls.name = name
 
-    def __init__(
-        self,
-        args: str,
-        *,
-        loc: Location,
-        conf: C | None = None,
-        env=None,  # type: Environment | None
-    ) -> None:
+    def __init__(self, args: str, conf: Optional[Config], **kw: Unpack[CmdKw]) -> None:
         conf_class = self.__annotations__['conf']
-        if conf is not None:
-            if conf_class is not None and not isinstance(conf, conf_class):
+        if conf_class is None:
+            if conf is not None:
+                raise ValueError(f'Config not allowed for command "{self.name}"')
+            self.conf = None
+        elif conf is None:
+            self.conf = conf_class()
+        else:
+            if not isinstance(conf, conf_class):
                 raise TypeError(f'Expected {conf_class}, received {type(conf)}')
+            self.conf = conf
         self.args = args
-        self.loc = loc
-        self.conf = conf if conf is not None else conf_class()
-        self.env = env
+        self.loc = kw['loc']
+        self.env = kw['env']
 
     # error helpers
 
@@ -155,24 +160,23 @@ class Command[C: Config](ABC):
             loc=self.loc,
         )
 
-    def exc_runtime_error(self, msg) -> 'RuntimeCommandError':
+    def exc_runtime_error(self, msg: str) -> 'RuntimeCommandError':
         return RuntimeCommandError(
             f'Runtime error in docsub command "{self.name}": {msg}',
             loc=self.loc,
         )
 
 
-class Producer(Command, ABC, name=''):
+class Producer(Command, name=NotImplemented):
     """
     Base producing command.
     """
 
-    @abstractmethod
     def produce(self, sub: Substitution) -> Iterable[Line]:
-        raise NotImplementedError
+        yield from ()
 
 
-class Modifier[C: type[Config]](Command, ABC, name=''):
+class Modifier(Command, name=NotImplemented):
     """
     Base modifying command.
     """
@@ -200,7 +204,7 @@ class DocsubError(Exception):
     """
 
     message: str
-    loc: Location | None = None
+    loc: Optional[Location] = None
 
     def __str__(self) -> str:
         if self.loc:

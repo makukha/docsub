@@ -1,10 +1,11 @@
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Annotated, override
+from typing import Annotated
 
 from pydantic import Field
+from typing_extensions import Unpack, override
 
-from ..__base__ import Config, Line, Location, Producer, Substitution
+from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
 
 class IncludeConfig(Config):
@@ -14,8 +15,8 @@ class IncludeConfig(Config):
 class IncludeCommand(Producer, name='include'):
     conf: IncludeConfig
 
-    def __init__(self, args: str, *, conf: IncludeConfig, loc: Location, **kw) -> None:
-        super().__init__(args, loc=loc, conf=conf)
+    def __init__(self, args: str, *, conf: IncludeConfig, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         args = args.strip()
         if not args:
             raise self.exc_invalid_args()

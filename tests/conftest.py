@@ -1,12 +1,13 @@
 from pathlib import Path
 import shutil
 import sys
+from typing import Any
 
-from pytest import fixture  # type: ignore
+from pytest import fixture
 
 
 @fixture
-def data_path(tmp_path, request) -> Path:
+def data_path(tmp_path: Path, request: Any) -> Path:
     filename = Path(request.module.__file__).resolve()
     test_dir = filename.parent / filename.stem
     if test_dir.is_dir():

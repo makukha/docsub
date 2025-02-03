@@ -2,11 +2,12 @@ from collections.abc import Iterable
 import os
 from pathlib import Path
 from subprocess import check_output
-from typing import Annotated, override
+from typing import Annotated
 
 from pydantic import Field
+from typing_extensions import Unpack, override
 
-from ..__base__ import Config, Line, Location, Producer, Substitution
+from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
 
 class ExecConfig(Config):
@@ -17,8 +18,9 @@ class ExecConfig(Config):
 class ExecCommand(Producer, name='exec'):
     conf: ExecConfig
 
-    def __init__(self, args: str, *, loc: Location, conf: ExecConfig, **kw) -> None:
-        super().__init__(args, loc=loc, conf=conf, env=None)
+    @override
+    def __init__(self, args: str, *, conf: ExecConfig, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         commands = args.strip()
         if not commands:
             raise self.exc_invalid_args()

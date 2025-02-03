@@ -1,12 +1,13 @@
-from enum import StrEnum
+from enum import Enum
 import sys
+from typing import Optional
 
 from loguru import logger
 
 from .__base__ import Config
 
 
-class LogLevel(StrEnum):
+class LogLevel(str, Enum):
     TRACE = 'TRACE'
     DEBUG = 'DEBUG'
     INFO = 'INFO'
@@ -17,7 +18,7 @@ class LogLevel(StrEnum):
 
 
 class LoggingConfig(Config):
-    level: LogLevel | None = None
+    level: Optional[LogLevel] = None
 
 
 FORMAT = (
