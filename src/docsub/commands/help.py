@@ -4,11 +4,11 @@ import re
 import shlex
 import sys
 from subprocess import check_output
-from typing import Annotated, override
+from typing import Annotated, Unpack, override
 
 from pydantic import Field
 
-from ..__base__ import Config, Line, Location, Producer, Substitution
+from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
 
 class HelpConfig(Config):
@@ -22,8 +22,8 @@ RX_CMD = re.compile(rf'^\s*(?P<python>python\s+-m\s+)?(?P<cmd>{CMD}(\s+{CMD})*)\
 class HelpCommand(Producer, name='help'):
     conf: HelpConfig
 
-    def __init__(self, args: str, *, conf: HelpConfig, loc: Location, **kw) -> None:
-        super().__init__(args, loc=loc, conf=conf)
+    def __init__(self, args: str, *, conf: HelpConfig, **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=conf, **kw)
         if (match := RX_CMD.match(args)) is None:
             raise self.exc_invalid_args()
         self.use_python = bool(match.group('python'))

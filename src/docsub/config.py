@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 from loguru import logger
 from pydantic import Field
@@ -45,7 +45,7 @@ class DocsubSettings(BaseSettings):
         )
 
 
-def load_config(config_file: Path | None, **kwargs) -> DocsubSettings:
+def load_config(config_file: Path | None, **kwargs: dict[str, Any]) -> DocsubSettings:
     """Load config from file."""
     if config_file:
         DocsubSettings.model_config['toml_file'] = [config_file]

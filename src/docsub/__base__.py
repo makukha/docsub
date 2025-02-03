@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from itertools import chain
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self, TypedDict, Unpack
 
 from pydantic import BaseModel
 
@@ -118,7 +118,12 @@ class Substitution(SyntaxElement, ABC):
         yield from lines
 
 
-class Command[C: Config](ABC):
+class CmdKw(TypedDict):
+    loc: Location
+    env: 'Environment'
+
+
+class Command(ABC):
     """
     Base command.
     """
@@ -126,26 +131,19 @@ class Command[C: Config](ABC):
     name: ClassVar[str]
     conf: Config
 
-    def __init_subclass__(cls, *, name: str, **kw):
-        super().__init_subclass__(**kw)
+    def __init_subclass__(cls, *, name: str, **kwargs: dict[str, Any]) -> None:
+        super().__init_subclass__(**kwargs)
         cls.name = name
 
-    def __init__(
-        self,
-        args: str,
-        *,
-        loc: Location,
-        conf: C | None = None,
-        env=None,  # type: Environment | None
-    ) -> None:
+    def __init__(self, args: str, *, conf: Config | None, **kw: Unpack[CmdKw]) -> None:
         conf_class = self.__annotations__['conf']
         if conf is not None:
             if conf_class is not None and not isinstance(conf, conf_class):
                 raise TypeError(f'Expected {conf_class}, received {type(conf)}')
         self.args = args
-        self.loc = loc
         self.conf = conf if conf is not None else conf_class()
-        self.env = env
+        self.loc = kw['loc']
+        self.env = kw['env']
 
     # error helpers
 
@@ -155,14 +153,14 @@ class Command[C: Config](ABC):
             loc=self.loc,
         )
 
-    def exc_runtime_error(self, msg) -> 'RuntimeCommandError':
+    def exc_runtime_error(self, msg: str) -> 'RuntimeCommandError':
         return RuntimeCommandError(
             f'Runtime error in docsub command "{self.name}": {msg}',
             loc=self.loc,
         )
 
 
-class Producer(Command, ABC, name=''):
+class Producer(Command, ABC, name=NotImplemented):
     """
     Base producing command.
     """
@@ -172,7 +170,7 @@ class Producer(Command, ABC, name=''):
         raise NotImplementedError
 
 
-class Modifier[C: type[Config]](Command, ABC, name=''):
+class Modifier(Command, ABC, name=NotImplemented):
     """
     Base modifying command.
     """

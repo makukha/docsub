@@ -23,6 +23,7 @@ def test_readme_docsubfile_x(data_path, python, monkeypatch):
     monkeypatch.chdir(data_path)
     src = (data_path / '__input__.md').read_text()
     match = re.search(r'^<!-- docsub: x (?P<cmd>.+) -->$', src, flags=re.MULTILINE)
+    assert match is not None
     args = shlex.split(match.group('cmd'))
     result = CliRunner(mix_stderr=False).invoke(cli, ['x', *args])
     assert not result.stderr

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Any
 
 import rich_click as click
 
@@ -30,8 +31,8 @@ def cli(
     cmd_help_env_vars: str | None = None,
     cmd_include_base_dir: Path | None = None,
     cmd_x_docsubfile: Path | None = None,
-):
-    def maybe_json_loads(value: str | None) -> dict | None:
+) -> None:
+    def maybe_json_loads(value: str | None) -> Any | None:
         if value is not None:
             return json.loads(value)
         return None
@@ -58,7 +59,7 @@ def apply(
     ctx: click.Context,
     files: tuple[Path, ...],
     in_place: bool = False,
-):
+) -> None:
     """
     Update Markdown files with embedded content.
 
@@ -69,14 +70,14 @@ def apply(
 
 
 class XGroup(click.RichGroup):
-    def list_commands(self, ctx) -> list[str]:
+    def list_commands(self, ctx: click.Context) -> list[str]:
         env: Environment = ctx.obj
         try:
             return env.x_group.list_commands(ctx)
         except DocsubfileNotFound:
             return []
 
-    def get_command(self, ctx, name) -> click.Command | None:
+    def get_command(self, ctx: click.Context, name: str) -> click.Command | None:
         env: Environment = ctx.obj
         try:
             return env.x_group.get_command(ctx, name)
@@ -85,7 +86,7 @@ class XGroup(click.RichGroup):
 
 
 @cli.command(cls=XGroup)
-def x():
+def x() -> None:
     """
     Project-local commands.
     """

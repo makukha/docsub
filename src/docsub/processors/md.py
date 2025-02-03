@@ -31,7 +31,7 @@ RX_CMD = re.compile(
 class BlockSubstitution(Substitution):
     env: Environment | None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.all_commands_consumed = False
 
     @override

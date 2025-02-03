@@ -1,7 +1,7 @@
 import re
-from typing import Iterable, override
+from typing import Iterable, Unpack, override
 
-from ..__base__ import Substitution, Line, Location, Modifier
+from ..__base__ import CmdKw, Substitution, Line, Modifier
 
 
 N = r'[1-9][0-9]*'
@@ -11,8 +11,8 @@ RX_LINES = re.compile(
 
 
 class LinesCommand(Modifier, name='lines'):
-    def __init__(self, args: str, *, loc: Location, **kw) -> None:
-        super().__init__(args, loc=loc)
+    def __init__(self, args: str, conf: type[None], **kw: Unpack[CmdKw]) -> None:
+        super().__init__(args, conf=None, **kw)
         if not args.strip():
             raise self.exc_invalid_args()
         if not (match := RX_LINES.match(args)):
