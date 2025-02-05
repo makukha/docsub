@@ -3,7 +3,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any, Optional, Union
 
-from importloc import import_module_from_file
+from importloc import Location
 from pydantic import BaseModel
 import rich_click as click
 from typing_extensions import Self
@@ -48,7 +48,7 @@ class Environment:
         path = self.conf.cmd.x.docsubfile
         if not path.exists():
             raise DocsubfileNotFound(f'Docsubfile "{path}" not found')
-        docsubfile = import_module_from_file(path, 'docsubfile', replace=True)
+        docsubfile = Location(path).load('docsubfile', on_conflict='replace')
         if not hasattr(docsubfile, 'x') or not isinstance(docsubfile.x, click.Group):
             raise DocsubfileError(f'Docsubfile "{path}" has no valid "x" group')
         return docsubfile.x

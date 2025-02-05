@@ -1,7 +1,7 @@
 from docsub import Environment, click, pass_env
 
 @click.group()
-def x():
+def x() -> None:
     pass
 
 @x.command()

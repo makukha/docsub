@@ -45,7 +45,7 @@ scripts = {docsub = "docsub.__main__:cli"}
 
 requires-python = ">=3.9"
 dependencies = [
-  "importloc",
+  "importloc>=0.3,<0.4",
   "loguru>=0.7",
   "pydantic-settings>=2.7",
   "rich-click>=1.8",
