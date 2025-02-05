@@ -84,15 +84,15 @@ gh-pr title:
 # just test
 # just docs
 #
-# just pre-commit
-# just gh-pr "title"
-#
-# just version
+# just bump
 # just changelog
 # (proofread changelog)
 #
 # just docs
 # just build
+#
+# just gh-pr "title"
+#
 # just gh-release
 # just publish-pypi
 #
