@@ -2,10 +2,10 @@
 > Substitute dynamically generated content in Markdown files
 
 [![license](https://img.shields.io/github/license/makukha/docsub.svg)](https://github.com/makukha/docsub/blob/main/LICENSE)
-[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.8.0)](https://pypi.python.org/pypi/docsub)
+[![pypi](https://img.shields.io/pypi/v/docsub.svg#v0.8.1)](https://pypi.python.org/pypi/docsub)
 [![python versions](https://img.shields.io/pypi/pyversions/docsub.svg)](https://pypi.org/project/docsub)
-[![tests](https://raw.githubusercontent.com/makukha/docsub/v0.8.0/docs/_static/badge-tests.svg)](https://github.com/makukha/docsub)
-[![coverage](https://raw.githubusercontent.com/makukha/docsub/v0.8.0/docs/_static/badge-coverage.svg)](https://github.com/makukha/docsub)
+[![tests](https://raw.githubusercontent.com/makukha/docsub/v0.8.1/docs/_static/badge-tests.svg)](https://github.com/makukha/docsub)
+[![coverage](https://raw.githubusercontent.com/makukha/docsub/v0.8.1/docs/_static/badge-coverage.svg)](https://github.com/makukha/docsub)
 [![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
 [![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)](https://github.com/makukha/docsub)
 
@@ -13,7 +13,7 @@
 > * With `docsub`, every documentation file may become executable.
 > * Never use `docsub` to process files from untrusted sources.
 > * This project is in experimental state, syntax and functionality may change significantly.
-> * If still want to try it, use pinned package version `docsub==0.8.0`
+> * If still want to try it, use pinned package version `docsub==0.8.1`
 
 
 # Features
@@ -192,7 +192,7 @@ Recommended. The most flexible installation option, allowing [project-local comm
 # pyproject.toml
 [dependency-groups]
 dev = [
-  "docsub==0.8.0",
+  "docsub==0.8.1",
 ]
 ```
 
@@ -201,7 +201,7 @@ dev = [
 Works for simple cases.
 
 ```shell
-uv tool install docsub==0.8.0
+uv tool install docsub==0.8.1
 ```
 
 
@@ -537,4 +537,4 @@ This project appeared to maintain docs for [multipython](https://github.com/maku
 
 # Changelog
 
-[CHANGELOG.md](https://github.com/makukha/multipython/tree/main/CHANGELOG.md)
+[CHANGELOG.md](https://github.com/makukha/docsub/blob/main/CHANGELOG.md)
