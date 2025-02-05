@@ -7,7 +7,7 @@
 [![tests](https://raw.githubusercontent.com/makukha/docsub/v0.8.1/docs/_static/badge-tests.svg)](https://github.com/makukha/docsub)
 [![coverage](https://raw.githubusercontent.com/makukha/docsub/v0.8.1/docs/_static/badge-coverage.svg)](https://github.com/makukha/docsub)
 [![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
-[![uses docsub](https://img.shields.io/badge/uses-docsub-royalblue)](https://github.com/makukha/docsub)
+[![uses docsub](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/makukha/docsub/refs/heads/main/docs/badge/v1.json)](https://github.com/makukha/docsub)
 
 > [!WARNING]
 > * With `docsub`, every documentation file may become executable.
