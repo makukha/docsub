@@ -4,7 +4,7 @@ default:
 # helpers
 git-head := "$(git rev-parse --abbrev-ref HEAD)"
 gh-issue := "$(git rev-parse --abbrev-ref HEAD | cut -d- -f1)"
-gh-title := "$(GH_PAGER=cat gh issue view {{gh-issue}} --json title -t '{{{{.title}}')"
+gh-title := "$(GH_PAGER=cat gh issue view " + gh-issue + " --json title -t '{{.title}}')"
 version := "$(uv run bump-my-version show current_version 2>/dev/null)"
 
 # init local dev environment
@@ -19,10 +19,15 @@ init:
     echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
     chmod a+x .git/hooks/pre-commit
 
-# update local dev environment
+# synchronize local dev environment
 [group('dev')]
 sync:
     uv sync --all-groups
+
+# update local dev environment
+[group('dev')]
+upd:
+    uv sync --all-groups --upgrade
 
 # add news item of type
 [group('dev')]
@@ -73,8 +78,8 @@ pre-commit: lint docs
 
 # create GitHub pull request
 [group('commit')]
-gh-pr title:
-    gh pr create -d -t "{{title}}"
+gh-pr *title:
+    gh pr create -d -t "{{ if title == "" { gh-title } else { title } }}"
 
 #
 #  Release
@@ -84,17 +89,18 @@ gh-pr title:
 # just test
 # just docs
 #
+# just gh-pr
+#
 # just bump
 # just changelog
 # (proofread changelog)
 #
 # just docs
 # just build
-#
-# just gh-pr "title"
+# (merge pull request)
 #
 # just gh-release
-# just publish-pypi
+# just pypi-publish
 #
 
 # bump project version
