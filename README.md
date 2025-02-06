@@ -255,6 +255,22 @@ For nested blocks, only top level substitution is performed. Use block `#identif
 <!-- docsub: end #top -->
 ```
 
+When substitution block is indented, the indentation is preserved:
+
+<!-- docsub: begin #top -->
+<!-- docsub: include tests/test_readme_indent/__result__.md -->
+<!-- docsub: lines after 1 upto -1 -->
+```markdown
+* List item
+    <!-- docsub: begin -->
+    <!-- docsub: include sublist.md -->
+    * Sub-item 1
+    * Sub-item 2
+    * Sub-item 3
+    <!-- docsub: end -->
+```
+<!-- docsub: end #top -->
+
 # Directives
 
 * *Block delimiters*: `begin`, `end`
