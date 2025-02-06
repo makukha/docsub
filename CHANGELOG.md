@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file based on [Ke
 
 <!-- towncrier release notes start -->
 
+## [v0.8.3](https://github.com/makukha/docsub/releases/tag/v0.8.3) — 2025-02-06
+
+***Added 🌿***
+
+- Support indented substitution blocks in markdown ([#64](https://github.com/makukha/docsub/issues/64))
+
+
 ## [v0.8.2](https://github.com/makukha/docsub/releases/tag/v0.8.2) — 2025-02-05
 
 ***Changed***
