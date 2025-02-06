@@ -92,6 +92,7 @@ gh-pr *title:
 # just bump
 # just changelog
 # (proofread changelog)
+# (commit)
 #
 # just gh-pr
 #
