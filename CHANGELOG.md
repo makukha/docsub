@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file based on [Ke
 
 ## [v0.8.3](https://github.com/makukha/docsub/releases/tag/v0.8.3) — 2025-02-06
 
-### Added 🌿
+***Added 🌿***
 
 - Support indented substitution blocks in markdown ([#64](https://github.com/makukha/docsub/issues/64))
 

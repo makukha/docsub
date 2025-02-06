@@ -89,11 +89,11 @@ gh-pr *title:
 # just test
 # just docs
 #
-# just gh-pr
-#
 # just bump
 # just changelog
 # (proofread changelog)
+#
+# just gh-pr
 #
 # just docs
 # just build
