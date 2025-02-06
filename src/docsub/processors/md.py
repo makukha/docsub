@@ -20,7 +20,7 @@ from ..environment import Environment
 
 RX_FENCE = re.compile(r'^(?P<indent>\s*)(?P<fence>```+|~~~+).*$')
 
-DOCSUB_PREFIX = r'^\s*<!--\s*docsub:'
+DOCSUB_PREFIX = r'^(?P<indent>\s*)<!--\s*docsub:'
 RX_DOCSUB = re.compile(DOCSUB_PREFIX)
 RX_BEGIN = re.compile(DOCSUB_PREFIX + r'\s*begin(?:\s+#(?P<id>\S+))?\s*-->\s*$')
 RX_END = re.compile(DOCSUB_PREFIX + r'\s*end(?:\s+#(?P<id>\S+))?\s*-->\s*$')
@@ -43,7 +43,12 @@ class BlockSubstitution(Substitution):
             return None
         if not (match := RX_BEGIN.match(line.text)):
             raise cls.error_invalid(line.text, loc=line.loc)
-        return cls(loc=line.loc, id=match.group('id') or None, env=None)
+        return cls(
+            loc=line.loc,
+            id=match.group('id') or None,
+            indent=match.group('indent'),
+            env=None,
+        )
 
     def set_env(self, env: Environment) -> None:
         self.env = env
@@ -55,6 +60,7 @@ class BlockSubstitution(Substitution):
 
         # block end?
         if m := RX_END.match(line.text):
+            self.assert_docsub_indent(m, line)
             if (m.group('id') or None) == self.id:  # end of this block
                 self.validate_assumptions()
                 yield from self.produce_lines()
@@ -67,11 +73,13 @@ class BlockSubstitution(Substitution):
 
         # plain line because all commands consumed?
         if self.all_commands_consumed:
+            self.assert_line_indent(line)
             self.process_content_line(line)
             return
 
         # command?
         if m := RX_CMD.match(line.text):
+            self.assert_docsub_indent(m, line)
             name = m.group('name')
             conf = getattr(self.env.conf.cmd, name, None)
             cmd = COMMANDS[name](
@@ -85,10 +93,19 @@ class BlockSubstitution(Substitution):
             return
 
         # plain line, first after commands
+        self.assert_line_indent(line)
         self.all_commands_consumed = True
         self.validate_assumptions()
         self.process_content_line(line)
         return
+
+    def assert_docsub_indent(self, match: re.Match[str], line: Line) -> None:
+        if not match.group('indent').startswith(self.indent):
+            raise self.error_indent(loc=line.loc)
+
+    def assert_line_indent(self, line: Line) -> None:
+        if not line.text.startswith(self.indent):
+            raise self.error_indent(loc=line.loc)
 
     def validate_assumptions(self) -> None:
         """

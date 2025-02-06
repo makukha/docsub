@@ -69,6 +69,7 @@ class Substitution(SyntaxElement, ABC):
     """
 
     id: Optional[str] = None
+    indent: str = ''
     producers: list['Producer'] = field(default_factory=list)
     modifiers: list['Modifier'] = field(default_factory=list)
 
@@ -95,6 +96,9 @@ class Substitution(SyntaxElement, ABC):
     def error_invalid(cls, value: str, loc: Location) -> 'InvalidSubstitution':
         return InvalidSubstitution(f'Invalid docsub substitution: {value}', loc=loc)
 
+    def error_indent(self, loc: Location) -> 'DocsubIndentationError':
+        return DocsubIndentationError('Unexpected indentation', loc=loc)
+
     # processing
 
     def process_content_line(self, line: Line) -> None:
@@ -103,12 +107,24 @@ class Substitution(SyntaxElement, ABC):
 
     def produce_lines(self) -> Iterable[Line]:
         for mod_cmd in self.modifiers:
-            yield from mod_cmd.before_producers(self)
+            yield from self._indent_all(mod_cmd.before_producers(self))
         for prod_cmd in self.producers:
             for line in prod_cmd.produce(self):
-                yield from self._modified_lines(line)
+                yield from self._indent_all(self._modified_lines(line))
         for mod_cmd in self.modifiers:
             yield from mod_cmd.after_producers(self)
+
+    def _indent_all(self, lines: Iterable[Line]) -> Iterable[Line]:
+        if not self.indent:
+            yield from lines
+        else:
+            for line in lines:
+                yield self._indent_one(line)
+
+    def _indent_one(self, line: Line) -> Line:
+        if self.indent:
+            line.text = f'{self.indent}{line.text}'
+        return line
 
     def _modified_lines(self, line: Line) -> Iterable[Line]:
         lines = (line,)  # type: tuple[Line, ...]
@@ -222,6 +238,12 @@ class DocsubfileError(DocsubError):
 class DocsubfileNotFound(DocsubfileError, FileNotFoundError):
     """
     Docsubfile not found.
+    """
+
+
+class DocsubIndentationError(DocsubError, IndentationError):
+    """
+    Invalid indentation of docsub statement.
     """
 
 
