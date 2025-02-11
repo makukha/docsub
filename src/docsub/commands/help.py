@@ -1,19 +1,19 @@
 from collections.abc import Iterable
+from dataclasses import dataclass, field
 import os
 import re
 import shlex
 import sys
 from subprocess import check_output
-from typing import Annotated
 
-from pydantic import Field
 from typing_extensions import Unpack, override
 
 from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
 
+@dataclass
 class HelpConfig(Config):
-    env_vars: Annotated[dict[str, str], Field(default_factory=dict)]
+    env_vars: dict[str, str] = field(default_factory=dict)
 
 
 CMD = r'[-._a-zA-Z0-9]+'

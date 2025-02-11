@@ -1,6 +1,4 @@
-from typing import Annotated
-
-from pydantic import Field
+from dataclasses import dataclass, field
 
 from ..__base__ import Command, Config
 from .exec import ExecCommand, ExecConfig
@@ -21,8 +19,9 @@ COMMANDS: dict[str, type[Command]] = dict(
 )
 
 
+@dataclass
 class CmdConfig(Config):
-    exec: Annotated[ExecConfig, Field(default_factory=ExecConfig)]
-    help: Annotated[HelpConfig, Field(default_factory=HelpConfig)]
-    include: Annotated[IncludeConfig, Field(default_factory=IncludeConfig)]
-    x: Annotated[XConfig, Field(default_factory=XConfig)]
+    exec: ExecConfig = field(default_factory=ExecConfig)
+    help: HelpConfig = field(default_factory=HelpConfig)
+    include: IncludeConfig = field(default_factory=IncludeConfig)
+    x: XConfig = field(default_factory=XConfig)
