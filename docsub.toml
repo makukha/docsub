@@ -1,5 +1,5 @@
-[cmd.help]
+[tool.docsub.cmd.help]
 env_vars = { COLUMNS = "70" }
 
-[logging]
+[tool.docsub.logging]
 level = "DEBUG"
