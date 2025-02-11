@@ -8,6 +8,22 @@ All notable changes to this project will be documented in this file based on [Ke
 
 <!-- towncrier release notes start -->
 
+## [v0.9.0](https://github.com/makukha/docsub/releases/tag/v0.9.0) — 2025-02-11
+
+***Breaking 🔥***
+
+- Renamed command `apply` to `sync` ([#84](https://github.com/makukha/docsub/issues/84))
+- Changed configuration file root to `[tool.docsub]` ([#85](https://github.com/makukha/docsub/issues/85))
+
+***Added 🌿***
+
+- Support for Python 3.14, 3.13t, 3.14t ([#85](https://github.com/makukha/docsub/issues/85))
+
+***Misc***
+
+- Removed dependency on pydantic-settings ([#85](https://github.com/makukha/docsub/issues/85))
+
+
 ## [v0.8.3](https://github.com/makukha/docsub/releases/tag/v0.8.3) — 2025-02-06
 
 ***Added 🌿***
