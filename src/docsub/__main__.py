@@ -46,7 +46,7 @@ def cli(
         'cmd.x.docsubfile': cmd_x_docsubfile,
     }
 
-    ctx.obj = Environment.from_config_file(
+    ctx.obj = Environment.load(
         ctx=ctx,
         config_file=config_file,
         options={k: v for k, v in cli_options.items() if v is not None},

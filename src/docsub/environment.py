@@ -20,7 +20,7 @@ class Environment:
     project_root: Path
 
     @classmethod
-    def from_config_file(
+    def load(
         cls,
         ctx: click.Context,
         config_file: Optional[Path] = None,

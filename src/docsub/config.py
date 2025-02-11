@@ -39,13 +39,15 @@ class DocsubConfig(Config):
         configure_logging: bool = True,
     ) -> Self:
         conf = cls()
+        if config_file is None and DEFAULT_CONFIG_FILE.exists():
+            config_file = DEFAULT_CONFIG_FILE
         if config_file is not None:
             conf.update_from_toml(config_file)
         conf.update_from_env()
         if configure_logging:
             conf.logging.configure()
         # finish
-        text = json.dumps(asdict(conf), separators=(' ', ' '), cls=JSONEncoder)
+        text = json.dumps(asdict(conf), separators=(', ', ': '), cls=JSONEncoder)
         logger.debug(f'Loaded configuration {text}')
         return conf
 
