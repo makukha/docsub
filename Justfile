@@ -95,8 +95,7 @@ gh-pr *title:
 #
 # just gh-pr
 #
-# just docs
-# just build
+# just docs build
 # (merge pull request)
 #
 # just gh-release
