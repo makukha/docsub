@@ -17,7 +17,7 @@ docs: \
 	docs/_static/badge-tests.svg
 
 README.md: FORCE
-	uv run docsub apply -i $@
+	uv run docsub sync -i $@
 
 docs/_static/badge-coverage.svg: .tmp/coverage.xml
 	uv run genbadge coverage --local -i $< -o $@

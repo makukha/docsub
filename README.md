@@ -53,7 +53,7 @@
 # Usage
 
 ```shell
-$ uv run docsub apply -i README.md
+$ uv run docsub sync -i README.md
 ```
 
 ## From separate files...
@@ -352,7 +352,7 @@ Project command author can get access to docsub `Environment` object (including 
 ## Example
 
 ```shell
-$ uv run docsub apply -i sample.md
+$ uv run docsub sync -i sample.md
 ```
 
 ### sample.md
@@ -493,21 +493,21 @@ Usage: python -m docsub [OPTIONS] COMMAND [ARGS]...
 │ --help                            Show this message and exit.      │
 ╰────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ─────────────────────────────────────────────────────────╮
-│ apply    Update Markdown files with embedded content.              │
-│ x        Project-local commands.                                   │
+│ sync    Update Markdown files with embedded content.               │
+│ x       Project-local commands.                                    │
 ╰────────────────────────────────────────────────────────────────────╯
 ```
 <!-- docsub: end -->
 
-## `docsub apply`
+## `docsub sync`
 
 <!-- docsub: begin -->
-<!-- docsub: help python -m docsub apply -->
+<!-- docsub: help python -m docsub sync -->
 <!-- docsub: lines after 2 upto -1 -->
 <!-- docsub: strip -->
 ```shell
-$ docsub apply --help
-Usage: python -m docsub apply [OPTIONS] FILES...
+$ docsub sync --help
+Usage: python -m docsub sync [OPTIONS] FILES...
 
 Update Markdown files with embedded content.
 Read FILES and perform substitutions one by one. If one file depends

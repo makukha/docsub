@@ -1,11 +1,11 @@
 import click
 from docsub import Environment
-from docsub.__main__ import apply
+from docsub.__main__ import sync
 
 
 def test_tmpdir(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
-    env = Environment.load(click.Context(apply))
+    env = Environment.load(click.Context(sync))
     tmp = env.get_temp_dir('testing')
     assert tmp.exists()
     assert tmp.is_dir()

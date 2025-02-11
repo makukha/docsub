@@ -6,9 +6,9 @@ from click.testing import CliRunner
 from docsub.__main__ import cli
 
 
-def test_readme_docsubfile_apply(data_path, python, monkeypatch):
+def test_readme_docsubfile_sync(data_path, python, monkeypatch):
     monkeypatch.chdir(data_path)
-    result = CliRunner(mix_stderr=False).invoke(cli, ['apply', '__input__.md'])
+    result = CliRunner(mix_stderr=False).invoke(cli, ['sync', '__input__.md'])
     assert not result.stderr
     assert result.exit_code == 0
     expected = (data_path / '__result__.md').read_text()
