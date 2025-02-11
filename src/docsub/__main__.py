@@ -57,7 +57,7 @@ def cli(
 @click.argument('files', type=Path, nargs=-1, required=True)
 @click.option('-i', '--in-place', is_flag=True, help='Process files in-place')
 @click.pass_context
-def apply(
+def sync(
     ctx: click.Context,
     files: tuple[Path, ...],
     in_place: bool = False,
