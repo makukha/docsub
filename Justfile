@@ -85,8 +85,7 @@ gh-pr *title:
 #  Release
 # ---------
 #
-# just lint
-# just test
+# just lint test
 # just docs
 #
 # just bump
