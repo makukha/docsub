@@ -37,17 +37,19 @@ def cli(
             return json.loads(value)
         return None
 
-    ctx.obj = Environment.from_config_file(
+    cli_options = {
+        'local_dir': local_dir,
+        'cmd.exec.work_dir': cmd_exec_work_dir,
+        'cmd.exec.env_vars': maybe_json_loads(cmd_exec_env_vars),
+        'cmd.help.env_vars': maybe_json_loads(cmd_help_env_vars),
+        'cmd.include.base_dir': cmd_include_base_dir,
+        'cmd.x.docsubfile': cmd_x_docsubfile,
+    }
+
+    ctx.obj = Environment.load(
         ctx=ctx,
         config_file=config_file,
-        options={
-            'local_dir': local_dir,
-            'cmd.exec.work_dir': cmd_exec_work_dir,
-            'cmd.exec.env_vars': maybe_json_loads(cmd_exec_env_vars),
-            'cmd.help.env_vars': maybe_json_loads(cmd_help_env_vars),
-            'cmd.include.base_dir': cmd_include_base_dir,
-            'cmd.x.docsubfile': cmd_x_docsubfile,
-        },
+        options={k: v for k, v in cli_options.items() if v is not None},
     )
 
 

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 import sys
 from typing import Optional
@@ -17,8 +18,14 @@ class LogLevel(str, Enum):
     CRITICAL = 'CRITICAL'
 
 
+@dataclass
 class LoggingConfig(Config):
     level: Optional[LogLevel] = None
+
+    def configure(self) -> None:
+        logger.remove()
+        if self.level is not None:
+            logger.add(sys.stderr, level=self.level, format=FORMAT, filter='docsub')
 
 
 FORMAT = (
@@ -26,9 +33,3 @@ FORMAT = (
     '<level>{level: <8}</level> | '
     '<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>'
 )
-
-
-def configure_logging(conf: LoggingConfig) -> None:
-    logger.remove()
-    if conf.level is not None:
-        logger.add(sys.stderr, level=conf.level, format=FORMAT, filter='docsub')

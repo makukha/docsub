@@ -1,15 +1,15 @@
 from collections.abc import Iterable
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Annotated
 
-from pydantic import Field
 from typing_extensions import Unpack, override
 
 from ..__base__ import CmdKw, Config, Line, Location, Producer, Substitution
 
 
+@dataclass
 class IncludeConfig(Config):
-    base_dir: Annotated[Path, Field(default_factory=Path)]
+    base_dir: Path = field(default_factory=Path)
 
 
 class IncludeCommand(Producer, name='include'):

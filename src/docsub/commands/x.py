@@ -1,5 +1,6 @@
 from collections.abc import Iterable
 from contextlib import redirect_stdout
+from dataclasses import dataclass
 import io
 from pathlib import Path
 import re
@@ -19,11 +20,15 @@ from ..__base__ import (
 )
 
 
+DEFAULT_DOCSUBFILE_PATH = Path('docsubfile.py')
+
+
 RX_CMD = re.compile(r'^\s*(?P<cmd>\S+)(\s+(?P<params>.*))?$')
 
 
+@dataclass
 class XConfig(Config):
-    docsubfile: Path = Path('docsubfile.py')
+    docsubfile: Path = DEFAULT_DOCSUBFILE_PATH
 
 
 class XCommand(Producer, name='x'):

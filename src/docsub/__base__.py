@@ -5,14 +5,17 @@ from itertools import chain
 from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar, Optional, TypedDict, Union
 
-from pydantic import BaseModel
 from typing_extensions import Self, Unpack
 
 if TYPE_CHECKING:
     from .environment import Environment  # noqa: F401
 
 
-class Config(BaseModel): ...
+@dataclass
+class Config:
+    """
+    Base config class.
+    """
 
 
 # syntax
@@ -129,9 +132,7 @@ class Substitution(SyntaxElement, ABC):
     def _modified_lines(self, line: Line) -> Iterable[Line]:
         lines = (line,)  # type: tuple[Line, ...]
         for cmd in self.modifiers:
-            lines = tuple(
-                chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines)
-            )
+            lines = tuple(chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines))
         yield from lines
 
 
@@ -146,24 +147,28 @@ class Command:
     """
 
     name: ClassVar[str]
+    conf_class: ClassVar[type[Config]]
+
     conf: Optional[Config]
 
     def __init_subclass__(cls, *, name: str) -> None:
         super().__init_subclass__()
         cls.name = name
+        if name is not NotImplemented:
+            cls.conf_class = cls.__annotations__['conf']
 
     def __init__(self, args: str, conf: Optional[Config], **kw: Unpack[CmdKw]) -> None:
-        conf_class = self.__annotations__['conf']
-        if conf_class is None:
+        if self.conf_class is None:
             if conf is not None:
                 raise ValueError(f'Config not allowed for command "{self.name}"')
             self.conf = None
         elif conf is None:
-            self.conf = conf_class()
+            self.conf = self.conf_class()
         else:
-            if not isinstance(conf, conf_class):
-                raise TypeError(f'Expected {conf_class}, received {type(conf)}')
+            if not isinstance(conf, self.conf_class):
+                raise TypeError(f'Expected {self.conf_class}, received {type(conf)}')
             self.conf = conf
+
         self.args = args
         self.loc = kw['loc']
         self.env = kw['env']

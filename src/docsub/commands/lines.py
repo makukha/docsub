@@ -6,9 +6,7 @@ from ..__base__ import CmdKw, Substitution, Line, Modifier
 
 
 N = r'[1-9][0-9]*'
-RX_LINES = re.compile(
-    rf'^(?:\s*after\s+(?P<first>{N}))?(?:\s*upto\s+-(?P<last>{N}))?\s*$'
-)
+RX_LINES = re.compile(rf'^(?:\s*after\s+(?P<first>{N}))?(?:\s*upto\s+-(?P<last>{N}))?\s*$')
 
 
 class LinesCommand(Modifier, name='lines'):
