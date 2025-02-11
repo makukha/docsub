@@ -132,9 +132,7 @@ class Substitution(SyntaxElement, ABC):
     def _modified_lines(self, line: Line) -> Iterable[Line]:
         lines = (line,)  # type: tuple[Line, ...]
         for cmd in self.modifiers:
-            lines = tuple(
-                chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines)
-            )
+            lines = tuple(chain.from_iterable(cmd.on_produced_line(ln, self) for ln in lines))
         yield from lines
 
 

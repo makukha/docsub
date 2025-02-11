@@ -33,7 +33,8 @@ class DocsubConfig(Config):
     logging: LoggingConfig = field(default_factory=LoggingConfig)
 
     @classmethod
-    def load(cls,
+    def load(
+        cls,
         config_file: Optional[Path] = None,
         configure_logging: bool = True,
     ) -> Self:
@@ -56,7 +57,7 @@ class DocsubConfig(Config):
             if not name.startswith(env_prefix):
                 continue
             try:
-                setattr_separated(self, name[len(env_prefix):], os.environ[name])
+                setattr_separated(self, name[len(env_prefix) :], os.environ[name])
             except AttributeError:
                 msg = 'Environment variable {} does not match any config option'.format(name)
                 warnings.warn(msg, EnvironmentVariableWarning, stacklevel=2)
@@ -108,7 +109,7 @@ def update_from_dict(item: Any, values: dict[str, Any]) -> None:
             update_from_dict(getattr(item, k), v)
 
 
-def setattr_separated(item: Any, name: str, value: Any, sep: str='_') -> None:
+def setattr_separated(item: Any, name: str, value: Any, sep: str = '_') -> None:
     if not is_dataclass(item):
         raise ValueError(f'Nested attribute not allowed for {type(item)}')
 
