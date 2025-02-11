@@ -131,7 +131,7 @@ gh-release:
         exit 1
     fi
     tag="v{{version}}"
-    git tag "v$tag" HEAD
+    git tag "$tag" HEAD
     gh release create -d -t "$tag — $(date -Idate)" --generate-notes "$tag"
 
 # publish package on PyPI
